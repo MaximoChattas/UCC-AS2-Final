@@ -19,7 +19,7 @@ func Disconect_db() {
 
 func Init_db() {
 
-	clientOpts := options.Client().ApplyURI("mongodb://root:pass@localhost:27017/?authSource=admin&authMechanism=SCRAM-SHA-256")
+	clientOpts := options.Client().ApplyURI("mongodb://root:pass@mongodatabase:27017/?authSource=admin&authMechanism=SCRAM-SHA-256")
 	cli, err := mongo.Connect(context.TODO(), clientOpts)
 	client = cli
 

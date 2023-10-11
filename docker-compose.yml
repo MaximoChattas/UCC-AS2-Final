@@ -17,6 +17,7 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root"]
       timeout: 20s
       retries: 10
+
   user-reservation:
     build: ./User-Reservation-api/Backend
     depends_on:
@@ -24,3 +25,18 @@ services:
         condition: service_healthy
     ports:
       - "8090:8090"
+
+  mongodatabase:
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+
+  hotel:
+    build: ./Hotel-api/Backend
+    depends_on:
+      - mongodatabase
+    ports:
+      - "8080:8080"
