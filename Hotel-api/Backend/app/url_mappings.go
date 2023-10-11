@@ -15,12 +15,11 @@ func mapUrls() {
 	//router.DELETE("/hotel/:id", controller.DeleteHotel)
 	//router.PUT("/hotel/:id", controller.UpdateHotel)
 
-	//router.POST("/amenity", controller.InsertAmenity)
-	//router.GET("/amenity", controller.GetAmenities)
-	//
-	//router.GET("/image/:id", controller.GetImageById)
+	router.POST("/amenity", controller.InsertAmenity)
+	router.GET("/amenity", controller.GetAmenities)
+	router.DELETE("amenity/:id", controller.DeleteAmenityById)
 
-	//router.GET("/availability", controller.CheckAllAvailability)
+	//router.GET("/image/:id", controller.GetImageById)
 
 	log.Info("Finishing mappings configurations")
 }
