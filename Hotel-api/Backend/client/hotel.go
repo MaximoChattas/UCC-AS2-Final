@@ -86,7 +86,7 @@ func (c hotelClient) GetHotels() model.Hotels {
 }
 
 // TODO
-//func (c hotelClient) DeleteHotel(hotel model.Hotel) error {
+//func (c amenityClient) DeleteHotel(hotel model.Hotel) error {
 //	err := Db.Delete(&hotel).Error
 //
 //	if err != nil {
@@ -98,7 +98,7 @@ func (c hotelClient) GetHotels() model.Hotels {
 //}
 //
 //// TODO
-//func (c hotelClient) UpdateHotel(hotel model.Hotel) model.Hotel {
+//func (c amenityClient) UpdateHotel(hotel model.Hotel) model.Hotel {
 //
 //	//Db.Model(&hotel).Association("Amenities").Clear()
 //

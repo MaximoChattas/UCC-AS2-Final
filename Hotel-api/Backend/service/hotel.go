@@ -33,16 +33,16 @@ func (s *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) 
 	hotel.StreetNumber = hotelDto.StreetNumber
 	hotel.Rate = hotelDto.Rate
 
-	//for _, amenityName := range hotelDto.Amenities {
-	//	amenity := client.GetAmenityByName(amenityName)
-	//
-	//	if amenity.Id == 0 {
-	//		return hotelDto, errors.New("amenity not found")
-	//	}
-	//
-	//	hotel.Amenities = append(hotel.Amenities, amenity)
-	//
-	//}
+	for _, amenityName := range hotelDto.Amenities {
+		amenity := client.AmenityClient.GetAmenityByName(amenityName)
+
+		if amenity.Id.Hex() == "000000000000000000000000" {
+			return hotelDto, errors.New("amenity not found")
+		}
+
+		hotel.Amenities = append(hotel.Amenities, amenity)
+
+	}
 
 	hotel = client.HotelClient.InsertHotel(hotel)
 
@@ -101,10 +101,10 @@ func (s *hotelService) GetHotelById(id string) (dto.HotelDto, error) {
 	hotelDto.StreetNumber = hotel.StreetNumber
 	hotelDto.Rate = hotel.Rate
 
-	//for _, amenity := range hotel.Amenities {
-	//	hotelDto.Amenities = append(hotelDto.Amenities, amenity.Name)
-	//}
-	//
+	for _, amenity := range hotel.Amenities {
+		hotelDto.Amenities = append(hotelDto.Amenities, amenity.Name)
+	}
+
 	//for _, image := range hotel.Images {
 	//	var imageDto dto.ImageDto
 	//	imageDto.Id = image.Id
@@ -119,20 +119,20 @@ func (s *hotelService) GetHotelById(id string) (dto.HotelDto, error) {
 
 //func (s *hotelService) DeleteHotel(id int) error {
 //
-//	hotel := client.HotelClient.GetHotelById(id)
+//	hotel := client.AmenityClient.GetHotelById(id)
 //
 //	if hotel.Id == 0 {
 //		return errors.New("hotel not found")
 //	}
 //
-//	err := client.HotelClient.DeleteHotel(hotel)
+//	err := client.AmenityClient.DeleteHotel(hotel)
 //
 //	return err
 //}
 //
 //func (s *hotelService) UpdateHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) {
 //
-//	hotel := client.HotelClient.GetHotelById(hotelDto.Id)
+//	hotel := client.AmenityClient.GetHotelById(hotelDto.Id)
 //
 //	if hotel.Id == 0 {
 //		return hotelDto, errors.New("hotel not found")
@@ -156,7 +156,7 @@ func (s *hotelService) GetHotelById(id string) (dto.HotelDto, error) {
 //		hotel.Amenities = append(hotel.Amenities, amenity)
 //	}
 //
-//	hotel = client.HotelClient.UpdateHotel(hotel)
+//	hotel = client.AmenityClient.UpdateHotel(hotel)
 //
 //	if hotel.Id == 0 {
 //		return hotelDto, errors.New("error updating hotel")

@@ -10,7 +10,7 @@ type Hotel struct {
 	StreetName   string             `bson:"street_name"`
 	StreetNumber int                `bson:"street_number"`
 	Rate         float64            `bson:"rate"`
-	//Amenities    Amenities `bson:"amenities"`
+	Amenities    Amenities          `bson:"amenities"`
 	//Images       Images    `bson:"images"`
 }
 
