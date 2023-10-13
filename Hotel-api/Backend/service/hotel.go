@@ -13,8 +13,8 @@ type hotelServiceInterface interface {
 	GetHotelById(id string) (dto.HotelDto, error)
 	GetHotels() (dto.HotelsDto, error)
 	InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, error)
-	//DeleteHotel(id int) error
-	//UpdateHotel(hotelDto dto.HotelDto) (dto.HotelDto, error)
+	DeleteHotel(id string) error
+	UpdateHotel(hotelDto dto.HotelDto) (dto.HotelDto, error)
 }
 
 var HotelService hotelServiceInterface
@@ -117,51 +117,51 @@ func (s *hotelService) GetHotelById(id string) (dto.HotelDto, error) {
 	return hotelDto, nil
 }
 
-//func (s *hotelService) DeleteHotel(id int) error {
-//
-//	hotel := client.AmenityClient.GetHotelById(id)
-//
-//	if hotel.Id == 0 {
-//		return errors.New("hotel not found")
-//	}
-//
-//	err := client.AmenityClient.DeleteHotel(hotel)
-//
-//	return err
-//}
-//
-//func (s *hotelService) UpdateHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) {
-//
-//	hotel := client.AmenityClient.GetHotelById(hotelDto.Id)
-//
-//	if hotel.Id == 0 {
-//		return hotelDto, errors.New("hotel not found")
-//	}
-//
-//	hotel.Name = hotelDto.Name
-//	hotel.StreetName = hotelDto.StreetName
-//	hotel.StreetNumber = hotelDto.StreetNumber
-//	hotel.Rate = hotelDto.Rate
-//	hotel.Description = hotelDto.Description
-//	hotel.RoomAmount = hotelDto.RoomAmount
-//	hotel.Amenities = model.Amenities{}
-//
-//	for _, amenityName := range hotelDto.Amenities {
-//		amenity := client.GetAmenityByName(amenityName)
-//
-//		if amenity.Id == 0 {
-//			return hotelDto, errors.New("amenity not found")
-//		}
-//
-//		hotel.Amenities = append(hotel.Amenities, amenity)
-//	}
-//
-//	hotel = client.AmenityClient.UpdateHotel(hotel)
-//
-//	if hotel.Id == 0 {
-//		return hotelDto, errors.New("error updating hotel")
-//	}
-//
-//	return hotelDto, nil
-//
-//}
+func (s *hotelService) DeleteHotel(id string) error {
+
+	hotel := client.HotelClient.GetHotelById(id)
+
+	if hotel.Id.Hex() == "000000000000000000000000" {
+		return errors.New("hotel not found")
+	}
+
+	err := client.HotelClient.DeleteHotelById(id)
+
+	return err
+}
+
+func (s *hotelService) UpdateHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) {
+
+	hotel := client.HotelClient.GetHotelById(hotelDto.Id)
+
+	if hotel.Id.Hex() == "000000000000000000000000" {
+		return hotelDto, errors.New("hotel not found")
+	}
+
+	hotel.Name = hotelDto.Name
+	hotel.StreetName = hotelDto.StreetName
+	hotel.StreetNumber = hotelDto.StreetNumber
+	hotel.Rate = hotelDto.Rate
+	hotel.Description = hotelDto.Description
+	hotel.RoomAmount = hotelDto.RoomAmount
+	hotel.Amenities = model.Amenities{}
+
+	for _, amenityName := range hotelDto.Amenities {
+		amenity := client.AmenityClient.GetAmenityByName(amenityName)
+
+		if amenity.Id.Hex() == "000000000000000000000000" {
+			return hotelDto, errors.New("amenity not found")
+		}
+
+		hotel.Amenities = append(hotel.Amenities, amenity)
+	}
+
+	hotel = client.HotelClient.UpdateHotelById(hotel)
+
+	if hotel.Id.Hex() == "000000000000000000000000" {
+		return hotelDto, errors.New("error updating hotel")
+	}
+
+	return hotelDto, nil
+
+}

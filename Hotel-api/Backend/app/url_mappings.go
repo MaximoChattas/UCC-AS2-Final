@@ -12,8 +12,8 @@ func mapUrls() {
 	router.GET("/hotel/:id", controller.GetHotelById)
 	router.GET("/hotel", controller.GetHotels)
 	//router.POST("/hotel/:id/images", controller.InsertImages)
-	//router.DELETE("/hotel/:id", controller.DeleteHotel)
-	//router.PUT("/hotel/:id", controller.UpdateHotel)
+	router.DELETE("/hotel/:id", controller.DeleteHotel)
+	router.PUT("/hotel/:id", controller.UpdateHotel)
 
 	router.POST("/amenity", controller.InsertAmenity)
 	router.GET("/amenity", controller.GetAmenities)

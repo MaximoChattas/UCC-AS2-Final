@@ -4,7 +4,9 @@ import (
 	db "Hotel/db"
 	"Hotel/model"
 	"context"
+	"errors"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -15,8 +17,8 @@ type hotelClientInterface interface {
 	InsertHotel(hotel model.Hotel) model.Hotel
 	GetHotelById(id string) model.Hotel
 	GetHotels() model.Hotels
-	//DeleteHotel(hotel model.Hotel) error
-	//UpdateHotel(hotel model.Hotel) model.Hotel
+	DeleteHotelById(id string) error
+	UpdateHotelById(hotel model.Hotel) model.Hotel
 }
 
 var HotelClient hotelClientInterface
@@ -85,37 +87,53 @@ func (c hotelClient) GetHotels() model.Hotels {
 	return hotels
 }
 
-// TODO
-//func (c amenityClient) DeleteHotel(hotel model.Hotel) error {
-//	err := Db.Delete(&hotel).Error
-//
-//	if err != nil {
-//		log.Debug("Failed to delete hotel")
-//	} else {
-//		log.Debug("Hotel deleted: ", hotel.Id)
-//	}
-//	return err
-//}
-//
-//// TODO
-//func (c amenityClient) UpdateHotel(hotel model.Hotel) model.Hotel {
-//
-//	//Db.Model(&hotel).Association("Amenities").Clear()
-//
-//	var newAmenities model.Amenities
-//
-//	for _, amenity := range hotel.Amenities {
-//		newAmenities = append(newAmenities, amenity)
-//	}
-//	result := Db.Save(&hotel)
-//
-//	Db.Model(&hotel).Association("Amenities").Replace(newAmenities)
-//
-//	if result.Error != nil {
-//		log.Debug("Failed to update hotel")
-//		return model.Hotel{}
-//	}
-//
-//	log.Debug("Updated hotel: ", hotel.Id)
-//	return hotel
-//}
+func (c hotelClient) DeleteHotelById(id string) error {
+
+	db := db.MongoDb
+
+	objID, _ := primitive.ObjectIDFromHex(id)
+
+	result, err := db.Collection("hotels").DeleteOne(context.TODO(), bson.D{{"_id", objID}})
+
+	if result.DeletedCount == 0 {
+		log.Debug("Hotel not found")
+		return errors.New("hotel not found")
+
+	} else if err != nil {
+		log.Debug("Failed to delete hotel")
+
+	} else {
+		log.Debug("Hotel deleted successfully: ", id)
+	}
+	return err
+}
+
+// // TODO
+func (c hotelClient) UpdateHotelById(hotel model.Hotel) model.Hotel {
+
+	db := db.MongoDb
+
+	update := bson.D{{"$set",
+		bson.D{
+			{"name", hotel.Name},
+			{"room_amount", hotel.RoomAmount},
+			{"description", hotel.Description},
+			{"street_name", hotel.StreetName},
+			{"street_number", hotel.StreetNumber},
+			{"rate", hotel.Rate},
+			{"amenities", hotel.Amenities},
+		},
+	}}
+
+	result, err := db.Collection("hotels").UpdateOne(context.TODO(), bson.D{{"_id", hotel.Id}}, update)
+
+	if result.MatchedCount != 0 {
+		log.Debug("Updated hotel successfully")
+		return hotel
+
+	} else if err != nil {
+		log.Debug("Failed to update hotel")
+	}
+
+	return model.Hotel{}
+}
