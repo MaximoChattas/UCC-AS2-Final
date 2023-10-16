@@ -4,6 +4,8 @@ import (
 	"Hotel/client"
 	"Hotel/dto"
 	"Hotel/model"
+	"Hotel/queue"
+	"encoding/json"
 	"errors"
 )
 
@@ -51,6 +53,15 @@ func (s *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) 
 	if hotel.Id.Hex() == "000000000000000000000000" {
 		return hotelDto, errors.New("error creating hotel")
 	}
+
+	body := map[string]interface{}{
+		"Id":      hotel.Id.Hex(),
+		"Message": "create",
+	}
+
+	jsonBody, _ := json.Marshal(body)
+
+	queue.Publish(jsonBody)
 
 	return hotelDto, nil
 }
@@ -161,6 +172,15 @@ func (s *hotelService) UpdateHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) 
 	if hotel.Id.Hex() == "000000000000000000000000" {
 		return hotelDto, errors.New("error updating hotel")
 	}
+
+	body := map[string]interface{}{
+		"Id":      hotel.Id.Hex(),
+		"Message": "update",
+	}
+
+	jsonBody, _ := json.Marshal(body)
+
+	queue.Publish(jsonBody)
 
 	return hotelDto, nil
 
