@@ -117,6 +117,7 @@ func (c hotelClient) UpdateHotelById(hotel model.Hotel) model.Hotel {
 			{"name", hotel.Name},
 			{"room_amount", hotel.RoomAmount},
 			{"description", hotel.Description},
+			{"city", hotel.City},
 			{"street_name", hotel.StreetName},
 			{"street_number", hotel.StreetNumber},
 			{"rate", hotel.Rate},

@@ -31,6 +31,7 @@ func (s *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) 
 	hotel.Name = hotelDto.Name
 	hotel.Description = hotelDto.Description
 	hotel.RoomAmount = hotelDto.RoomAmount
+	hotel.City = hotelDto.City
 	hotel.StreetName = hotelDto.StreetName
 	hotel.StreetNumber = hotelDto.StreetNumber
 	hotel.Rate = hotelDto.Rate
@@ -76,6 +77,7 @@ func (s *hotelService) GetHotels() (dto.HotelsDto, error) {
 		hotelDto.Id = hotel.Id.Hex()
 		hotelDto.Name = hotel.Name
 		hotelDto.RoomAmount = hotel.RoomAmount
+		hotelDto.City = hotel.City
 		hotelDto.Description = hotel.Description
 		hotelDto.StreetName = hotel.StreetName
 		hotelDto.StreetNumber = hotel.StreetNumber
@@ -104,6 +106,7 @@ func (s *hotelService) GetHotelById(id string) (dto.HotelDto, error) {
 	hotelDto.Name = hotel.Name
 	hotelDto.RoomAmount = hotel.RoomAmount
 	hotelDto.Description = hotel.Description
+	hotelDto.City = hotel.City
 	hotelDto.StreetName = hotel.StreetName
 	hotelDto.StreetNumber = hotel.StreetNumber
 	hotelDto.Rate = hotel.Rate
@@ -141,6 +144,7 @@ func (s *hotelService) UpdateHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) 
 	}
 
 	hotel.Name = hotelDto.Name
+	hotel.City = hotelDto.City
 	hotel.StreetName = hotelDto.StreetName
 	hotel.StreetNumber = hotelDto.StreetNumber
 	hotel.Rate = hotelDto.Rate
