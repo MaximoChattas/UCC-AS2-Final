@@ -3,9 +3,11 @@ package controller
 import (
 	"Hotel/dto"
 	"Hotel/service"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"path"
 )
 
 func InsertHotel(c *gin.Context) {
@@ -86,6 +88,49 @@ func UpdateHotel(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, hotelDto)
+}
+
+func InsertImages(c *gin.Context) {
+	var hotelDto dto.HotelDto
+
+	id := c.Param("id")
+
+	hotelDto, err := service.HotelService.GetHotelById(id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	form, _ := c.MultipartForm()
+	files := form.File["images"]
+
+	imageCount := len(hotelDto.Images)
+
+	for i, file := range files {
+
+		fileExt := path.Ext(file.Filename)
+
+		//Filename as [hotel_id]-[image_number].[file_extension]
+		fileName := fmt.Sprintf("%s-%d%s", id, i+1+imageCount, fileExt)
+
+		err = c.SaveUploadedFile(file, "Images/"+fileName)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+			return
+		}
+
+		hotelDto.Images = append(hotelDto.Images, fileName)
+	}
+
+	hotelDto, err = service.HotelService.UpdateHotel(hotelDto)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

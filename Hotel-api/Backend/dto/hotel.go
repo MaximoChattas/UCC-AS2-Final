@@ -9,7 +9,7 @@ type HotelDto struct {
 	StreetNumber int      `json:"street_number" validate:"required"`
 	Rate         float64  `json:"rate" validate:"required"`
 	Amenities    []string `json:"amenities,omitempty"`
-	//Images       ImagesDto `json:"images,omitempty"`
+	Images       []string `json:"images,omitempty"`
 }
 
 type HotelsDto []HotelDto

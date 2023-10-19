@@ -108,7 +108,6 @@ func (c hotelClient) DeleteHotelById(id string) error {
 	return err
 }
 
-// // TODO
 func (c hotelClient) UpdateHotelById(hotel model.Hotel) model.Hotel {
 
 	db := db.MongoDb
@@ -122,6 +121,7 @@ func (c hotelClient) UpdateHotelById(hotel model.Hotel) model.Hotel {
 			{"street_number", hotel.StreetNumber},
 			{"rate", hotel.Rate},
 			{"amenities", hotel.Amenities},
+			{"images", hotel.Images},
 		},
 	}}
 

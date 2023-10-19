@@ -81,14 +81,10 @@ func (s *hotelService) GetHotels() (dto.HotelsDto, error) {
 		hotelDto.StreetNumber = hotel.StreetNumber
 		hotelDto.Rate = hotel.Rate
 
-		//if len(hotel.Images) > 0 {
-		//	var imageDto dto.ImageDto
-		//	imageDto.Id = hotel.Images[0].Id
-		//	imageDto.Path = hotel.Images[0].Path
-		//	imageDto.HotelId = hotel.Images[0].HotelId
-		//
-		//	hotelDto.Images = append(hotelDto.Images, imageDto)
-		//}
+		// Append thumbnail (first image)
+		if len(hotel.Images) > 0 {
+			hotelDto.Images = append(hotelDto.Images, hotel.Images[0])
+		}
 
 		hotelsDto = append(hotelsDto, hotelDto)
 	}
@@ -116,14 +112,9 @@ func (s *hotelService) GetHotelById(id string) (dto.HotelDto, error) {
 		hotelDto.Amenities = append(hotelDto.Amenities, amenity.Name)
 	}
 
-	//for _, image := range hotel.Images {
-	//	var imageDto dto.ImageDto
-	//	imageDto.Id = image.Id
-	//	imageDto.Path = image.Path
-	//	imageDto.HotelId = image.HotelId
-	//
-	//	hotelDto.Images = append(hotelDto.Images, imageDto)
-	//}
+	for _, image := range hotel.Images {
+		hotelDto.Images = append(hotelDto.Images, image)
+	}
 
 	return hotelDto, nil
 }
@@ -165,6 +156,10 @@ func (s *hotelService) UpdateHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) 
 		}
 
 		hotel.Amenities = append(hotel.Amenities, amenity)
+	}
+
+	for _, image := range hotelDto.Images {
+		hotel.Images = append(hotel.Images, image)
 	}
 
 	hotel = client.HotelClient.UpdateHotelById(hotel)
