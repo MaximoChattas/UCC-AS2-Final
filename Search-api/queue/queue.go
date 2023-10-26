@@ -2,9 +2,12 @@ package queue
 
 import (
 	"Search/dto"
+	"Search/service"
 	"encoding/json"
 	amqp "github.com/rabbitmq/amqp091-go"
 	log "github.com/sirupsen/logrus"
+	"io"
+	"net/http"
 )
 
 var queue amqp.Queue
@@ -68,5 +71,45 @@ func Consume() {
 		if err != nil {
 			log.Error("Error:", err)
 		}
+
+		handleQueueMessage(jsonMessage)
+	}
+}
+
+func handleQueueMessage(messageDto dto.QueueMessageDto) {
+
+	if messageDto.Message == "create" || messageDto.Message == "update" {
+		resp, err := http.Get("http://localhost:8080/hotel/" + messageDto.Id)
+
+		if err != nil {
+			log.Error("Error in HTTP request ", err)
+			return
+		}
+
+		defer resp.Body.Close()
+
+		body, err := io.ReadAll(resp.Body)
+
+		if err != nil {
+			log.Error("Error reading response ", err)
+			return
+		}
+
+		var hotelDto dto.HotelDto
+
+		err = json.Unmarshal(body, &hotelDto)
+
+		if err != nil {
+			log.Error("Error parsing JSON ", err)
+			return
+		}
+
+		err = service.HotelService.InsertUpdateHotel(hotelDto)
+
+		if err != nil {
+			log.Error(err)
+			return
+		}
+
 	}
 }
