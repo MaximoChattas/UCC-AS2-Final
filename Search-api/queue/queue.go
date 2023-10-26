@@ -44,8 +44,7 @@ func Publish(body []byte) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	err = channel.PublishWithContext(
-		ctx,
+	err = channel.PublishWithContext(ctx,
 		"",
 		queue.Name,
 		false,
@@ -57,6 +56,5 @@ func Publish(body []byte) {
 
 	if err != nil {
 		log.Debug("Error while publishing message", err)
-		log.Fatal(err)
 	}
 }
