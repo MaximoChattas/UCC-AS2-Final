@@ -7,27 +7,27 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func Consume() (dto.QueueMessagesDto, error) {
+var queue amqp.Queue
+var channel *amqp.Channel
 
-	conn, err := amqp.Dial("amqp://user:password@rabbitmq:5672/")
-
+func InitQueue() {
+	conn, err := amqp.Dial("amqp://user:password@localhost:5672/")
 	if err != nil {
-		log.Debug("Failed to connect to RabbitMQ")
-		return dto.QueueMessagesDto{}, err
+		log.Info("Failed to connect to RabbitMQ")
+		log.Fatal(err)
+	} else {
+		log.Info("RabbitMQ connection established")
 	}
 
-	defer conn.Close()
-
-	channel, err := conn.Channel()
-
+	channel, err = conn.Channel()
 	if err != nil {
-		log.Debug("Failed to open channel")
-		return dto.QueueMessagesDto{}, err
+		log.Info("Failed to open channel")
+		log.Fatal(err)
+	} else {
+		log.Info("Channel opened")
 	}
 
-	defer channel.Close()
-
-	queue, err := channel.QueueDeclare(
+	queue, err = channel.QueueDeclare(
 		"hotel",
 		false,
 		false,
@@ -37,9 +37,14 @@ func Consume() (dto.QueueMessagesDto, error) {
 	)
 
 	if err != nil {
-		log.Debug("Fail to declare a queue")
-		return dto.QueueMessagesDto{}, err
+		log.Info("Failed to declare a queue")
+		log.Fatal(err)
+	} else {
+		log.Info("Queue declared")
 	}
+}
+
+func Consume() {
 
 	msgs, err := channel.Consume(
 		queue.Name,
@@ -51,11 +56,8 @@ func Consume() (dto.QueueMessagesDto, error) {
 		nil,
 	)
 	if err != nil {
-		log.Debug("Failed to publish consumer", err)
-		return dto.QueueMessagesDto{}, err
+		log.Error("Failed to publish consumer", err)
 	}
-
-	var messages dto.QueueMessagesDto
 
 	for msg := range msgs {
 
@@ -64,11 +66,7 @@ func Consume() (dto.QueueMessagesDto, error) {
 		err = json.Unmarshal(msg.Body, &jsonMessage)
 
 		if err != nil {
-			return dto.QueueMessagesDto{}, err
+			log.Error("Error:", err)
 		}
-
-		messages = append(messages, jsonMessage)
 	}
-
-	return messages, nil
 }
