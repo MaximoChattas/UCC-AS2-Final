@@ -7,13 +7,13 @@ import (
 	"time"
 )
 
-func Publish(body []byte) {
+func Publish(body []byte) error {
 
 	conn, err := amqp.Dial("amqp://user:password@rabbitmq:5672/")
 
 	if err != nil {
 		log.Debug("Failed to connect to RabbitMQ")
-		log.Fatal(err)
+		return err
 	}
 
 	defer conn.Close()
@@ -22,7 +22,7 @@ func Publish(body []byte) {
 
 	if err != nil {
 		log.Debug("Failed to open channel")
-		log.Fatal(err)
+		return err
 	}
 
 	defer channel.Close()
@@ -38,7 +38,7 @@ func Publish(body []byte) {
 
 	if err != nil {
 		log.Debug("Fail to declare a queue")
-		log.Fatal(err)
+		return err
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -57,6 +57,8 @@ func Publish(body []byte) {
 
 	if err != nil {
 		log.Debug("Error while publishing message", err)
-		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }
