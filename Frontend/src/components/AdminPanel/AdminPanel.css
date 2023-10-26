@@ -1,0 +1,11 @@
+.contenedorAdmin{
+    text-align: center;
+    background-color: #333;
+    width: 100vw;
+    height: 100vh;
+    margin-top: 50px;
+}
+
+.button {
+    margin: 10px;
+}
