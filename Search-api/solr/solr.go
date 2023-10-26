@@ -11,7 +11,7 @@ func InitSolr() {
 
 	var err error
 
-	SolrClient, err = solr.Init("http://localhost:8983/solr/hotels", 8983, "hotels")
+	SolrClient, err = solr.Init("localhost", 8983, "hotels")
 	if err != nil {
 		log.Info("Failed to connect to Solr")
 		log.Fatal(err)
@@ -19,3 +19,7 @@ func InitSolr() {
 		log.Info("Connected to Solr successfully")
 	}
 }
+
+// TODO: Client for Solr Documents CRUD
+// TODO: Service function to handle queue messages received
+// TODO: Functions and endpoints to retrieve data from Solr
