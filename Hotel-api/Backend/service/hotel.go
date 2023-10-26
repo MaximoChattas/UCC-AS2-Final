@@ -173,8 +173,8 @@ func (s *hotelService) UpdateHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) 
 	}
 
 	body := map[string]interface{}{
-		"Id":      hotel.Id.Hex(),
-		"Message": "update",
+		"id":      hotel.Id.Hex(),
+		"message": "update",
 	}
 
 	jsonBody, _ := json.Marshal(body)
