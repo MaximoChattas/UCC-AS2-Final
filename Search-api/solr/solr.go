@@ -19,7 +19,3 @@ func InitSolr() {
 		log.Info("Connected to Solr successfully")
 	}
 }
-
-// TODO: Client for Solr Documents CRUD
-// TODO: Service function to handle queue messages received
-// TODO: Functions and endpoints to retrieve data from Solr
