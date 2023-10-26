@@ -7,27 +7,27 @@ import (
 	"time"
 )
 
-func Publish(body []byte) error {
+var queue amqp.Queue
+var channel *amqp.Channel
 
+func InitQueue() {
 	conn, err := amqp.Dial("amqp://user:password@rabbitmq:5672/")
-
 	if err != nil {
-		log.Debug("Failed to connect to RabbitMQ")
-		return err
+		log.Info("Failed to connect to RabbitMQ")
+		log.Fatal(err)
+	} else {
+		log.Info("RabbitMQ connection established")
 	}
 
-	defer conn.Close()
-
-	channel, err := conn.Channel()
-
+	channel, err = conn.Channel()
 	if err != nil {
-		log.Debug("Failed to open channel")
-		return err
+		log.Info("Failed to open channel")
+		log.Fatal(err)
+	} else {
+		log.Info("Channel opened")
 	}
 
-	defer channel.Close()
-
-	queue, err := channel.QueueDeclare(
+	queue, err = channel.QueueDeclare(
 		"hotel",
 		false,
 		false,
@@ -37,14 +37,19 @@ func Publish(body []byte) error {
 	)
 
 	if err != nil {
-		log.Debug("Fail to declare a queue")
-		return err
+		log.Info("Failed to declare a queue")
+		log.Fatal(err)
+	} else {
+		log.Info("Queue declared")
 	}
+}
+
+func Publish(body []byte) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	err = channel.PublishWithContext(
+	err := channel.PublishWithContext(
 		ctx,
 		"",
 		queue.Name,
