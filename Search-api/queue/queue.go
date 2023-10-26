@@ -1,19 +1,19 @@
 package queue
 
 import (
-	"context"
+	"Search/dto"
+	"encoding/json"
 	amqp "github.com/rabbitmq/amqp091-go"
 	log "github.com/sirupsen/logrus"
-	"time"
 )
 
-func Publish(body []byte) {
+func Consume() (dto.QueueMessagesDto, error) {
 
 	conn, err := amqp.Dial("amqp://user:password@rabbitmq:5672/")
 
 	if err != nil {
 		log.Debug("Failed to connect to RabbitMQ")
-		log.Fatal(err)
+		return dto.QueueMessagesDto{}, err
 	}
 
 	defer conn.Close()
@@ -22,7 +22,7 @@ func Publish(body []byte) {
 
 	if err != nil {
 		log.Debug("Failed to open channel")
-		log.Fatal(err)
+		return dto.QueueMessagesDto{}, err
 	}
 
 	defer channel.Close()
@@ -38,23 +38,37 @@ func Publish(body []byte) {
 
 	if err != nil {
 		log.Debug("Fail to declare a queue")
-		log.Fatal(err)
+		return dto.QueueMessagesDto{}, err
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	err = channel.PublishWithContext(ctx,
-		"",
+	msgs, err := channel.Consume(
 		queue.Name,
+		"",
+		true,
 		false,
 		false,
-		amqp.Publishing{
-			ContentType: "application/json",
-			Body:        body,
-		})
-
+		true,
+		nil,
+	)
 	if err != nil {
-		log.Debug("Error while publishing message", err)
+		log.Debug("Failed to publish consumer", err)
+		return dto.QueueMessagesDto{}, err
 	}
+
+	var messages dto.QueueMessagesDto
+
+	for msg := range msgs {
+
+		var jsonMessage dto.QueueMessageDto
+
+		err = json.Unmarshal(msg.Body, &jsonMessage)
+
+		if err != nil {
+			return dto.QueueMessagesDto{}, err
+		}
+
+		messages = append(messages, jsonMessage)
+	}
+
+	return messages, nil
 }
