@@ -111,5 +111,13 @@ func handleQueueMessage(messageDto dto.QueueMessageDto) {
 			return
 		}
 
+	} else if messageDto.Message == "delete" {
+
+		err := service.HotelService.DeleteHotelById(messageDto.Id)
+
+		if err != nil {
+			log.Error(err)
+			return
+		}
 	}
 }

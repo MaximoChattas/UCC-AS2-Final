@@ -40,10 +40,10 @@ func (s hotelService) InsertUpdateHotel(hotelDto dto.HotelDto) error {
 		},
 	}
 
-	err := client.SolrHotelClient.InsertUpdateHotel(document)
+	err := client.SolrHotelClient.UpdateHotel(document)
 
 	if err != nil {
-		log.Info("Error inserting hotel", err)
+		log.Info("Error updating hotel", err)
 		return err
 	}
 
@@ -59,5 +59,21 @@ func (s hotelService) GetHotelById(id string) dto.HotelDto {
 }
 
 func (s hotelService) DeleteHotelById(id string) error {
+
+	document := map[string]interface{}{
+		"delete": []interface{}{
+			map[string]interface{}{
+				"id": id,
+			},
+		},
+	}
+
+	err := client.SolrHotelClient.UpdateHotel(document)
+
+	if err != nil {
+		log.Info("Error deleting hotel", err)
+		return err
+	}
+
 	return nil
 }
