@@ -40,7 +40,7 @@ const Reservation = ({ hotel_id, hotelRate, startDate, endDate }) => {
         end_date: format(checkoutDate, "dd-MM-yyyy HH:mm"),
       };
 
-      const response = await fetch("http://localhost:8090/reserve", {
+      const response = await fetch("http://localhost:8080/reserve", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

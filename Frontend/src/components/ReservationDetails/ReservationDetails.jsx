@@ -62,7 +62,7 @@ const ReservationDetails = () => {
 
   const handleDeleteReservation = async () => {
     try {
-      const response = await fetch(`http://localhost:8090/reservation/${id}`, {
+      const response = await fetch(`http://localhost:8080/reservation/${id}`, {
         method: 'DELETE',
       });
       if (response.ok) {

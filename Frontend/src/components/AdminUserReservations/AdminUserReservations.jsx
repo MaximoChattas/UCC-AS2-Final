@@ -13,12 +13,12 @@ const AdminUserReservations = () => {
   useEffect(() => {
     const fetchUserReservations = async () => {
       try {
-        const response = await fetch(`http://localhost:8090/reservation`);
+        const response = await fetch(`http://localhost:8085/reservation`);
         if (response.ok) {
           const data = await response.json();
           setUserReservations({ reservations: data });
 
-          const userResponse = await fetch(`http://localhost:8090/user`);
+          const userResponse = await fetch(`http://localhost:8085/user`);
           if (userResponse.ok) {
             const userData = await userResponse.json();
             setUsers(userData);

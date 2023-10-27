@@ -23,7 +23,7 @@ const HotelDetails = () => {
   useEffect(() => {
     const fetchHotelDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:8090/hotel/${id}`);
+        const response = await fetch(`http://localhost:8085/hotel/${id}`);
         if (response.ok) {
           const data = await response.json();
           setHotel(data);
@@ -45,7 +45,7 @@ const HotelDetails = () => {
 
   const handleDeleteHotel = async () => {
     try {
-      const response = await fetch(`http://localhost:8090/hotel/${id}`, {
+      const response = await fetch(`http://localhost:8080/hotel/${id}`, {
         method: 'DELETE',
       });
       if (response.ok) {

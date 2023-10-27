@@ -25,7 +25,7 @@ function Signup() {
         throw new Error('Complete todos los campos requeridos')
       }
 
-      const response = await fetch('http://localhost:8090/user', {
+      const response = await fetch('http://localhost:8080/user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

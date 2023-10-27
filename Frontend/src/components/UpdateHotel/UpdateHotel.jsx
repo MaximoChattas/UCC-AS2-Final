@@ -25,7 +25,7 @@ function UpdateHotel() {
     useEffect(() => {
         const fetchHotelDetails = async () => {
             try {
-                const response = await fetch(`http://localhost:8090/hotel/${id}`);
+                const response = await fetch(`http://localhost:8085/hotel/${id}`);
                 if (response.ok) {
                     const data = await response.json();
 
@@ -58,7 +58,7 @@ function UpdateHotel() {
                 throw new Error('Complete todos los campos requeridos');
             }
 
-            const response = await fetch(`http://localhost:8090/hotel/${id}`, {
+            const response = await fetch(`http://localhost:8080/hotel/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -98,7 +98,7 @@ function UpdateHotel() {
     useEffect(() => {
         const fetchAmenities = async () => {
             try {
-                const response = await fetch('http://localhost:8090/amenity');
+                const response = await fetch('http://localhost:8085/amenity');
                 if (response.ok) {
                     const data = await response.json();
                     setAmenities(data);

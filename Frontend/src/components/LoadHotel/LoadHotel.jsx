@@ -34,7 +34,7 @@ function LoadHotel() {
                 throw new Error('Complete todos los campos requeridos');
             }
 
-            const response = await fetch('http://localhost:8090/hotel', {
+            const response = await fetch('http://localhost:8080/hotel', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ function LoadHotel() {
                 formData.append('images', image);
             });
 
-            const response = await fetch(`http://localhost:8090/hotel/${hotelId}/images`, {
+            const response = await fetch(`http://localhost:8080/hotel/${hotelId}/images`, {
                 method: 'POST',
                 body: formData,
             });
@@ -103,7 +103,7 @@ function LoadHotel() {
     useEffect(() => {
         const fetchAmenities = async () => {
             try {
-                const response = await fetch('http://localhost:8090/amenity');
+                const response = await fetch('http://localhost:8085/amenity');
                 if (response.ok) {
                     const data = await response.json();
                     setAmenities(data);

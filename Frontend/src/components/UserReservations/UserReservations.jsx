@@ -16,12 +16,12 @@ const UserReservations = () => {
   useEffect(() => {
     const fetchUserReservations = async () => {
       try {
-        const response = await fetch(`http://localhost:8090/user/reservations/${id}`);
+        const response = await fetch(`http://localhost:8085/user/reservations/${id}`);
         if (response.ok) {
           const data = await response.json();
           setUserReservations(data);
 
-          const hotelResponse = await fetch(`http://localhost:8090/hotel`);
+          const hotelResponse = await fetch(`http://localhost:8085/hotel`);
             if (hotelResponse.ok) {
             const hotelData = await hotelResponse.json();
             setHotels(hotelData);

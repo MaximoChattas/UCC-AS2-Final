@@ -22,7 +22,7 @@ function LoadAmenity() {
                 throw new Error('Complete todos los campos requeridos');
             }
 
-            const response = await fetch('http://localhost:8090/amenity', {
+            const response = await fetch('http://localhost:8080/amenity', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
