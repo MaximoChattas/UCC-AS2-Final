@@ -14,7 +14,7 @@ var queue amqp.Queue
 var channel *amqp.Channel
 
 func InitQueue() {
-	conn, err := amqp.Dial("amqp://user:password@localhost:5672/")
+	conn, err := amqp.Dial("amqp://user:password@rabbitmq:5672/")
 	if err != nil {
 		log.Info("Failed to connect to RabbitMQ")
 		log.Fatal(err)
@@ -79,7 +79,7 @@ func Consume() {
 func handleQueueMessage(messageDto dto.QueueMessageDto) {
 
 	if messageDto.Message == "create" || messageDto.Message == "update" {
-		resp, err := http.Get("http://localhost:8080/hotel/" + messageDto.Id)
+		resp, err := http.Get("http://hotel:8080/hotel/" + messageDto.Id)
 
 		if err != nil {
 			log.Error("Error in HTTP request ", err)
