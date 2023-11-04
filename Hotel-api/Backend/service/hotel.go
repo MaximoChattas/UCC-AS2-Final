@@ -136,6 +136,23 @@ func (s *hotelService) DeleteHotel(id string) error {
 
 	err := client.HotelClient.DeleteHotelById(id)
 
+	if err != nil {
+		return err
+	}
+
+	body := map[string]interface{}{
+		"id":      hotel.Id.Hex(),
+		"message": "delete",
+	}
+
+	jsonBody, _ := json.Marshal(body)
+
+	err = queue.Publish(jsonBody)
+
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
