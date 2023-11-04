@@ -1,6 +1,0 @@
-version: '3'
-services:
-  mi_aplicacion:
-    image: mi_imagen:latest
-    ports:
-      - '3000:3000'

@@ -1,10 +1,53 @@
 {
-    "version": "3",
-    "services": {
-      "mi_aplicacion": {
-        "image": "mi_imagen:latest",
-        "ports": ["3000:3000"]
+    "hotels": [
+      {
+        "name": "Windsor Hotel",
+        "room_amount": 24,
+        "description": "El Windsor Hotel & Tower presenta un interior de lujo en mármol y ofrece WiFi gratuita, terraza con piscina climatizada y habitaciones con vistas a la ciudad. Se puede reservar un servicio de masajes. El gimnasio cuenta con entrenadores personales. El Windsor Hotel & Tower está ubicado en pleno centro de la escena cultural de Córdoba. Se halla a 200 metros de la catedral histórica de la ciudad y a 300 metros del Museo Iberoamericano de Artesanías. Las habitaciones disponen de aire acondicionado, sillas tapizadas y suelo de moqueta o parquet. Además, están equipadas con mobiliario elegante de madera, minibar y TV de pantalla plana con canales por cable. Hay carta de almohadas con 5 opciones diferentes.",
+        "street_name": "Buenos Aires",
+        "street_number": 214,
+        "rate": 45980.00
+      },
+      {
+        "name": "Amerian Executive",
+        "room_amount": 15,
+        "description": "Amerian Executive Córdoba es un hotel de categoría superior situado en el centro de la ciudad de Córdoba. Su arquitectura y decoración interior se han inspirado en el clásico estilo europeo, combinado con el estilo neoclásico creando zonas cálidas y acogedoras.",
+        "street_name": "Bv. San Juan",
+        "street_number": 137,
+        "rate": 32905.87
+      },
+      {
+        "name": "Sol de Piedra",
+        "room_amount": 12,
+        "description": "Ubicado estratégicamente en el corazón de Córdoba, en nuestras instalaciones usted podrá encontrar el más moderno y innovador diseño por pisos temáticos que le permitirán conocer la belleza de la cultura local.",
+        "street_name": "Obispo Trejo",
+        "street_number": 137,
+        "rate": 27209
+      },
+      {
+        "name": "Orfeo Suites",
+        "room_amount": 18,
+        "description": "La búsqueda del hotel para familias ideal en Córdoba no tiene por qué ser complicada. Bienvenido a Orfeo Suites Hotel, una fantástica opción para viajeros como tú. Para aquellos interesados en visitar puntos de referencia conocidos durante su viaje a Córdoba, Orfeo Suites Hotel se encuentra cerca de Camino de las Altas Cumbres (2,3 km) y Templo de Cordoba La Iglesia De Jesucristo De Los Santos De Los Últimos Días (2,5 km). Las habitaciones de los huéspedes ofrecen servicios como aire acondicionado, minibar y frigorífico, y los huéspedes pueden permanecer conectados con wifi gratuito que ofrece el hotel. Orfeo Hotel tiene recepción abierta 24 horas, servicio de habitaciones y espacio para guardar el equipaje para que la estancia sea más agradable. El establecimiento también cuenta con piscina y desayuno incluido. Si vas en coche a Orfeo Suites Hotel, hay parking gratis disponible.",
+        "street_name": "Rodriguez del Busto",
+        "street_number": 4086,
+        "rate": 46301.99
+      },
+      {
+        "name": "Laplace Hotel",
+        "room_amount": 20,
+        "description": "Moderno hotel tres estrellas de 1100 m² emplazado en el barrio Villa Belgrano sobre la Av. Pedro Simón Laplace, una zona residencial única por su belleza y encanto en la ciudad de Córdoba - Argentina. Su diseño fue inspirado en la satisfacción del visitante, equipando a sus 20 habitaciones con la última tecnología.",
+        "street_name": "Av. Simon Laplace",
+        "street_number": 5355,
+        "rate": 41870.00
+      },
+      {
+        "name": "Howard Johnson",
+        "room_amount": 25,
+        "description": "¿Buscas dónde alojarte en Córdoba? Entonces no te pierdas Howard Johnson Hotel Córdoba, un hotel de moda que te acerca a lo mejor de Córdoba. Para que te sientas como en casa, las habitaciones en el hotel incluyen televisor de pantalla plana, minibar y aire acondicionado, y mantenerte conectado es fácil, ya que hay wifi gratuito disponible. Los huéspedes tienen acceso a recepción abierta 24 horas, servicio de habitaciones y conserje durante su estancia en Howard Johnson La Cañada Hotel. Además, Howard Johnson La Cañada Hotel ofrece piscina en la azotea y desayuno incluido, lo que hará tu viaje a Córdoba aún más gratificante.",
+        "street_name": "Pte J Figueroa Alcorta",
+        "street_number": 20,
+        "rate": 54230.00
       }
-    }
+    ]
   }
   
