@@ -38,6 +38,7 @@ func init() {
 func StartDbEngine() {
 	// Migrate all model classes
 	Db.AutoMigrate(&model.User{})
+	Db.AutoMigrate(&model.Reservation{})
 
 	log.Info("Finishing Migration Database Tables")
 }
