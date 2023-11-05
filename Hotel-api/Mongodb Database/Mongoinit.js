@@ -1,74 +1,47 @@
 const fs = require('fs');
 const MongoClient = require('mongodb').MongoClient;
-const { spawn } = require('child_process');
 
-const dockerComposeFile = 'docker-compose.yml'; // Ruta al archivo Compose de Docker
-const mongoURL = 'mongodb://localhost:27017'; // URL de la base de datos MongoDB
+// Ruta al archivo JSON
+const jsonFilePath = './init.json'; // Ajusta la ruta según tu estructura
 
-const dbName = 'hotel_db'; // Nombre de la base de datos
-const collectionName = 'hotels'; // Nombre de la colección
+// URL de conexión a la base de datos MongoDB
+const mongoURL = 'mongodb://root:pass@mongodatabase:27017';
 
-// Conexión a MongoDB
-const client = new MongoClient(mongoURL, { useNewUrlParser: true, useUnifiedTopology: true });
+// Nombre de la base de datos y colección
+const dbName = 'test';
+const collectionName = 'hotels';
 
-async function loadHotels() {
-  try {
-    const data = fs.readFileSync(dockerComposeFile, 'utf8');
-    const composeConfig = JSON.parse(data);
-    if (composeConfig.hotels) {
-      return composeConfig.hotels;
-    }
-  } catch (error) {
-    console.error(`Error al cargar el archivo Compose de Docker: ${error}`);
+// Leer el contenido del archivo JSON
+fs.readFile(jsonFilePath, 'utf8', (err, data) => {
+  if (err) {
+    console.error('Error al leer el archivo JSON:', err);
+    process.exit(1);
   }
-  return [];
-}
 
-async function saveToMongo(hotels) {
-  try {
+  const jsonData = JSON.parse(data);
+
+  // Conectar a la base de datos MongoDB
+  MongoClient.connect(mongoURL, { useUnifiedTopology: true }, (err, client) => {
+    if (err) {
+      console.error('Error al conectar a MongoDB:', err);
+      process.exit(1);
+    }
+
     const db = client.db(dbName);
     const collection = db.collection(collectionName);
 
-    await collection.deleteMany({});
-    const result = await collection.insertMany(hotels);
-
-    console.log(`Se han insertado ${result.insertedCount} registros en MongoDB.`);
-  } catch (error) {
-    console.error(`Error al insertar en MongoDB: ${error}`);
-  }
-}
-
-async function watchDockerComposeFile() {
-  try {
-    let lastModified = fs.statSync(dockerComposeFile).mtimeMs;
-
-    fs.watch(dockerComposeFile, (event, filename) => {
-      if (event === 'change') {
-        const currentModified = fs.statSync(dockerComposeFile).mtimeMs;
-        if (currentModified !== lastModified) {
-          console.log(`Se ha detectado un cambio en ${dockerComposeFile}. Cargando hoteles en MongoDB.`);
-          lastModified = currentModified;
-          loadHotels().then(saveToMongo);
-        }
+    // Insertar los datos del archivo JSON en la colección
+    collection.insertMany(jsonData.hotels, (err, result) => {
+      if (err) {
+        console.error('Error al insertar en MongoDB:', err);
+        process.exit(1);
       }
+
+      console.log('Datos insertados en MongoDB:');
+      console.log(result.insertedCount + ' documentos insertados');
+
+      // Cerrar la conexión a MongoDB
+      client.close();
     });
-  } catch (error) {
-    console.error(`Error al observar el archivo Compose de Docker: ${error}`);
-  }
-}
-
-(async () => {
-  try {
-    await client.connect();
-    console.log('Conexión a MongoDB establecida.');
-
-    // Cargar los hoteles por primera vez
-    const initialHotels = await loadHotels();
-    await saveToMongo(initialHotels);
-
-    // Observar cambios en el archivo Docker Compose
-    watchDockerComposeFile();
-  } catch (error) {
-    console.error(`Error: ${error}`);
-  }
-})();
+  });
+});

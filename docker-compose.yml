@@ -27,7 +27,7 @@ services:
       - "8090:8090"
 
   mongodatabase:
-    image: mongo
+    build: ./Hotel-api/Mongodb Database 
     ports:
       - "27017:27017"
     environment:
@@ -75,3 +75,12 @@ services:
         condition: service_started
     ports:
       - "8085:8085"
+
+  # init-mongo:
+  #   image: node:14
+  #   volumes:
+  #     - ./path/to/your/js/file:/app/init.js
+  #     - ./path/to/your/json/file:/app/init.json
+  #   depends_on:
+  #     - mongodatabase
+  #   command: ["node", "/app/init.js"]
