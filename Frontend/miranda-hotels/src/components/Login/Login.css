@@ -1,0 +1,16 @@
+.contenedorLogin{
+    text-align: center;
+    background-color: #333;
+    width: 100vw;
+    height: 100vh;
+}
+
+.contenedorLogin input{
+    width: 30%;
+    margin: 10px;
+    background-color: rgb(224, 224, 224);
+  }
+
+  .error-message{
+    color: red;
+  }

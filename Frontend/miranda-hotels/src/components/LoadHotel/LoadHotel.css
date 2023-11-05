@@ -1,0 +1,28 @@
+.contenedorLoad{
+    text-align: center;
+    background-color: #333;
+    width: 100vw;
+    height: 100vh;
+}
+
+.contenedorLoad h5 {
+    margin-top: 20px;
+  }
+
+.contenedorLoad input[type="text"],
+.contenedorLoad input[type="number"],
+.contenedorLoad input[type="email"],
+.contenedorLoad input[type="password"],
+.contenedorLoad textarea {
+    width: 30%;
+    margin: 10px;
+    background-color: rgb(224, 224, 224);
+}
+
+.contenedorLoad input[type="checkbox"] {
+    margin: 10px;
+}
+
+  .error-message{
+    color: red;
+  }

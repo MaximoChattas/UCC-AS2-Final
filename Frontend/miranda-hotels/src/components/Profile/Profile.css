@@ -1,0 +1,12 @@
+.descripcion{
+    margin-top: 50px;
+    text-align: center;
+    padding: 10px;
+    background-color: #333;
+    width: 100vw;
+    height: 100vh;
+}
+
+.button {
+    margin: 10px;
+}

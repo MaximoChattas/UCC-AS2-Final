@@ -1,0 +1,38 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  background-color: #333333;
+  }
+  
+  .boton {
+    display: block;
+    padding: 20px 20px;
+    margin: 10px;
+    border-radius: 100px;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+  }
+
+
+  
+  .contenedorBotones {
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .asd {
+    padding-left: 5px;
+    color: yellow;
+  }
+  
+  .nav-link {
+    text-decoration: none;
+  }
+
+  header{
+    border-bottom: 10px white solid;
+    margin-bottom: 10px;
+  }
