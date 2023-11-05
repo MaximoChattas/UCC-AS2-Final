@@ -1,11 +1,13 @@
 package service
 
 import (
+	"User-Reservation/cache"
 	"User-Reservation/client"
 	"User-Reservation/dto"
 	"User-Reservation/model"
 	"encoding/json"
 	"errors"
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	"io"
 	"math"
@@ -243,6 +245,22 @@ func (s *reservationService) CheckAllAvailability(startDate string, endDate stri
 		return hotelsAvailable, errors.New("a reservation can't end before it starts")
 	}
 
+	cacheKey := fmt.Sprintf("%s/%s", reservationStart.Format("02-01-06"), reservationEnd.Format("02-01-06"))
+
+	result, err := cache.Get(cacheKey)
+
+	if err == nil {
+
+		err = json.Unmarshal(result, &hotelsAvailable)
+
+		if err != nil {
+			return dto.HotelsDto{}, errors.New("error unmarshaling json")
+		}
+
+		return hotelsAvailable, nil
+
+	}
+
 	hotels := s.getAllHotels()
 
 	resultsCh := make(chan dto.HotelDto)
@@ -280,6 +298,9 @@ func (s *reservationService) CheckAllAvailability(startDate string, endDate stri
 	for hotelDto := range resultsCh {
 		hotelsAvailable = append(hotelsAvailable, hotelDto)
 	}
+
+	jsonResult, _ := json.Marshal(hotelsAvailable)
+	cache.Set(cacheKey, jsonResult)
 
 	return hotelsAvailable, nil
 }
