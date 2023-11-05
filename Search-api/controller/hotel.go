@@ -24,8 +24,15 @@ func GetHotelById(c *gin.Context) {
 func GetHotels(c *gin.Context) {
 
 	var hotelsDto dto.HotelsDto
+	var err error
 
-	hotelsDto, err := service.HotelService.GetHotels()
+	city := c.Query("city")
+
+	if city == "" {
+		hotelsDto, err = service.HotelService.GetHotels()
+	} else {
+		hotelsDto, err = service.HotelService.GetHotelByCity(city)
+	}
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

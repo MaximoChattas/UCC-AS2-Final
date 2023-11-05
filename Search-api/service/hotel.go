@@ -13,6 +13,7 @@ type hotelServiceInterface interface {
 	InsertUpdateHotel(hotelDto dto.HotelDto) error
 	GetHotels() (dto.HotelsDto, error)
 	GetHotelById(id string) (dto.HotelDto, error)
+	GetHotelByCity(id string) (dto.HotelsDto, error)
 	DeleteHotelById(id string) error
 }
 
@@ -115,6 +116,40 @@ func (s hotelService) GetHotelById(id string) (dto.HotelDto, error) {
 	hotelsDto := unmarshalSolrResponse(solrResponsesDto)
 
 	return hotelsDto[0], nil
+}
+
+func (s hotelService) GetHotelByCity(city string) (dto.HotelsDto, error) {
+
+	var solrResponsesDto dto.SolrResponsesDto
+	results, err := client.SolrHotelClient.GetHotelsByCity(city)
+
+	if err != nil {
+		log.Info(err)
+		return dto.HotelsDto{}, err
+	}
+
+	for i := 0; i < results.Len(); i++ {
+		var solrResponseDto dto.SolrResponseDto
+
+		jsonResult, err := json.Marshal(results.Get(i).Fields)
+
+		if err != nil {
+			return dto.HotelsDto{}, err
+		}
+
+		err = json.Unmarshal(jsonResult, &solrResponseDto)
+
+		if err != nil {
+			return dto.HotelsDto{}, err
+		}
+
+		solrResponsesDto = append(solrResponsesDto, solrResponseDto)
+	}
+
+	hotelsDto := unmarshalSolrResponse(solrResponsesDto)
+
+	return hotelsDto, nil
+
 }
 
 func (s hotelService) DeleteHotelById(id string) error {

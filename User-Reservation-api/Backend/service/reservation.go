@@ -12,6 +12,7 @@ import (
 	"io"
 	"math"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 )
@@ -25,7 +26,7 @@ type reservationServiceInterface interface {
 	DeleteReservation(id int) error
 	getHotelInfo(hotelId string) (dto.HotelDto, error)
 	CheckAvailability(hotelId string, startDate time.Time, endDate time.Time) bool
-	CheckAllAvailability(startDate string, endDate string) (dto.HotelsDto, error)
+	CheckAllAvailability(city string, startDate string, endDate string) (dto.HotelsDto, error)
 }
 
 var ReservationService reservationServiceInterface
@@ -177,8 +178,10 @@ func (s *reservationService) getHotelInfo(hotelId string) (dto.HotelDto, error) 
 	return hotelDto, nil
 }
 
-func (s *reservationService) getAllHotels() dto.HotelsDto {
-	resp, err := http.Get("http://hotel:8080/hotel/")
+func (s *reservationService) getAllHotelsByCity(city string) dto.HotelsDto {
+
+	cityFormatted := strings.ReplaceAll(city, " ", "+")
+	resp, err := http.Get("http://search:8085/hotel?city=" + cityFormatted)
 
 	if err != nil {
 		log.Error("Error in HTTP request ", err)
@@ -233,7 +236,7 @@ func (s *reservationService) CheckAvailability(hotelId string, startDate time.Ti
 	return true
 }
 
-func (s *reservationService) CheckAllAvailability(startDate string, endDate string) (dto.HotelsDto, error) {
+func (s *reservationService) CheckAllAvailability(city string, startDate string, endDate string) (dto.HotelsDto, error) {
 
 	var wg sync.WaitGroup
 	var hotelsAvailable dto.HotelsDto
@@ -245,7 +248,8 @@ func (s *reservationService) CheckAllAvailability(startDate string, endDate stri
 		return hotelsAvailable, errors.New("a reservation can't end before it starts")
 	}
 
-	cacheKey := fmt.Sprintf("%s/%s", reservationStart.Format("02-01-06"), reservationEnd.Format("02-01-06"))
+	cityFormatted := city[0:3]
+	cacheKey := fmt.Sprintf("%s/%s/%s", cityFormatted, reservationStart.Format("02-01-06"), reservationEnd.Format("02-01-06"))
 
 	result, err := cache.Get(cacheKey)
 
@@ -261,7 +265,7 @@ func (s *reservationService) CheckAllAvailability(startDate string, endDate stri
 
 	}
 
-	hotels := s.getAllHotels()
+	hotels := s.getAllHotelsByCity(city)
 
 	resultsCh := make(chan dto.HotelDto)
 
@@ -276,6 +280,7 @@ func (s *reservationService) CheckAllAvailability(startDate string, endDate stri
 				var hotelDto dto.HotelDto
 				hotelDto.Id = hotel.Id
 				hotelDto.Name = hotel.Name
+				hotelDto.City = hotel.City
 				hotelDto.StreetName = hotel.StreetName
 				hotelDto.StreetNumber = hotel.StreetNumber
 				hotelDto.RoomAmount = hotel.RoomAmount

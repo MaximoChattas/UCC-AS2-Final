@@ -72,10 +72,11 @@ func DeleteReservation(c *gin.Context) {
 
 func CheckAvailability(c *gin.Context) {
 
+	city := c.Query("city")
 	startDate := c.Query("start_date")
 	endDate := c.Query("end_date")
 
-	hotelsAvailable, err := service.ReservationService.CheckAllAvailability(startDate, endDate)
+	hotelsAvailable, err := service.ReservationService.CheckAllAvailability(city, startDate, endDate)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
