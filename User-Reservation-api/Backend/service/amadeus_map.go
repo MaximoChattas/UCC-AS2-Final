@@ -19,6 +19,7 @@ type amadeusService struct{}
 type amadeusServiceInterface interface {
 	InsertAmadeusMap(amadeusMapDto dto.AmadeusMapDto) (dto.AmadeusMapDto, error)
 	GetAmadeusIdByHotelId(hotelId string) (dto.AmadeusMapDto, error)
+	GetAmadeusAvailability(amadeusId string, startDate time.Time, endDate time.Time) (bool, error)
 }
 
 var AmadeusService amadeusServiceInterface
@@ -51,7 +52,7 @@ func (s *amadeusService) GetAmadeusIdByHotelId(hotelId string) (dto.AmadeusMapDt
 	var amadeusMapDto dto.AmadeusMapDto
 
 	if mapping.HotelId == "" {
-		return amadeusMapDto, errors.New("hotel not found")
+		return amadeusMapDto, errors.New("you need to set amadeus id for this hotel")
 	}
 
 	amadeusMapDto.HotelId = mapping.HotelId
@@ -111,5 +112,58 @@ func getAmadeusToken() {
 
 		time.Sleep(1790 * time.Second)
 	}
+
+}
+
+func (s *amadeusService) GetAmadeusAvailability(amadeusId string, startDate time.Time, endDate time.Time) (bool, error) {
+
+	formatedStartDate := startDate.Format("2006-01-02")
+	formatedEndDate := endDate.Format("2006-01-02")
+
+	url := fmt.Sprintf("https://test.api.amadeus.com/v3/shopping/hotel-offers?hotelIds=%s&checkInDate=%s&checkOutDate=%s", amadeusId, formatedStartDate, formatedEndDate)
+
+	req, err := http.NewRequest("GET", url, strings.NewReader(""))
+
+	if err != nil {
+		log.Error("Error creating request:", err)
+		return false, err
+	}
+
+	req.Header.Set("Authorization", "Bearer "+amadeusToken)
+
+	httpClient := http.Client{}
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		log.Error("Error making request:", err)
+		return false, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		log.Error("Error during request:", resp.StatusCode)
+		return false, err
+	}
+
+	body, err := io.ReadAll(resp.Body)
+
+	if err != nil {
+		log.Error("Error reading response ", err)
+		return false, err
+	}
+
+	var availabilityResponse dto.AmadeusAvailabilityResponse
+	err = json.Unmarshal(body, &availabilityResponse)
+
+	if err != nil {
+		log.Error("Error parsing JSON ", err)
+		return false, err
+	}
+
+	// Amadeus not working correctly
+	if len(availabilityResponse.Data) == 0 {
+		return true, nil
+	}
+
+	return availabilityResponse.Data[0].Available, nil
 
 }
