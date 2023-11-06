@@ -43,7 +43,7 @@ func (s *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) 
 			return hotelDto, errors.New("amenity not found")
 		}
 
-		hotel.Amenities = append(hotel.Amenities, amenity)
+		hotel.Amenities = append(hotel.Amenities, amenityName)
 
 	}
 
@@ -86,11 +86,8 @@ func (s *hotelService) GetHotels() (dto.HotelsDto, error) {
 		hotelDto.StreetName = hotel.StreetName
 		hotelDto.StreetNumber = hotel.StreetNumber
 		hotelDto.Rate = hotel.Rate
-
-		// Append thumbnail (first image)
-		if len(hotel.Images) > 0 {
-			hotelDto.Images = append(hotelDto.Images, hotel.Images[0])
-		}
+		hotelDto.Amenities = hotel.Amenities
+		hotelDto.Images = hotel.Images
 
 		hotelsDto = append(hotelsDto, hotelDto)
 	}
@@ -114,13 +111,16 @@ func (s *hotelService) GetHotelById(id string) (dto.HotelDto, error) {
 	hotelDto.StreetName = hotel.StreetName
 	hotelDto.StreetNumber = hotel.StreetNumber
 	hotelDto.Rate = hotel.Rate
+	hotelDto.Images = hotel.Images
 
-	for _, amenity := range hotel.Amenities {
-		hotelDto.Amenities = append(hotelDto.Amenities, amenity.Name)
-	}
+	for _, amenityName := range hotel.Amenities {
+		amenity := client.AmenityClient.GetAmenityByName(amenityName)
 
-	for _, image := range hotel.Images {
-		hotelDto.Images = append(hotelDto.Images, image)
+		if amenity.Id.Hex() == "000000000000000000000000" {
+			return hotelDto, errors.New("amenity not found")
+		}
+
+		hotelDto.Amenities = append(hotelDto.Amenities, amenityName)
 	}
 
 	return hotelDto, nil
@@ -171,7 +171,7 @@ func (s *hotelService) UpdateHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) 
 	hotel.Rate = hotelDto.Rate
 	hotel.Description = hotelDto.Description
 	hotel.RoomAmount = hotelDto.RoomAmount
-	hotel.Amenities = model.Amenities{}
+	hotel.Amenities = []string{}
 
 	for _, amenityName := range hotelDto.Amenities {
 		amenity := client.AmenityClient.GetAmenityByName(amenityName)
@@ -180,7 +180,7 @@ func (s *hotelService) UpdateHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) 
 			return hotelDto, errors.New("amenity not found")
 		}
 
-		hotel.Amenities = append(hotel.Amenities, amenity)
+		hotel.Amenities = append(hotel.Amenities, amenityName)
 	}
 
 	for _, image := range hotelDto.Images {

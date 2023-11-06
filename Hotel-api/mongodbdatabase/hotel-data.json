@@ -6,7 +6,14 @@
       "city": "Córdoba",
       "street_name": "Buenos Aires",
       "street_number": 214,
-      "rate": 45980.00
+      "rate": 45980.00,
+      "amenities": [
+        "Wi-Fi",
+        "Desayuno",
+        "Gimnasio",
+        "Estacionamiento",
+        "Pileta"
+      ]
     },
     {
       "name": "Amerian Executive",
@@ -15,7 +22,14 @@
       "city": "Rosario",
       "street_name": "Bv. San Juan",
       "street_number": 137,
-      "rate": 32905.87
+      "rate": 32905.87,
+      "amenities": [
+        "Wi-Fi",
+        "Desayuno",
+        "Gimnasio",
+        "Cochera cubierta",
+        "Pileta climatizada"
+      ]
     },
     {
       "name": "Sol de Piedra",
@@ -24,7 +38,12 @@
       "city": "Mendoza",
       "street_name": "Obispo Trejo",
       "street_number": 137,
-      "rate": 27209
+      "rate": 27209,
+      "amenities": [
+        "Wi-Fi",
+        "Desayuno",
+        "Gimnasio"
+      ]
     },
     {
       "name": "Orfeo Suites",
@@ -33,7 +52,18 @@
       "city": "Buenos Aires",
       "street_name": "Rodriguez del Busto",
       "street_number": 4086,
-      "rate": 46301.99
+      "rate": 46301.99,
+      "amenities": [
+        "Wi-Fi",
+        "Desayuno",
+        "Gimnasio",
+        "Estacionamiento",
+        "Cochera cubierta",
+        "Pileta",
+        "Pileta climatizada",
+        "Pool bar",
+        "Sala de juegos"
+      ]
     },
     {
       "name": "Laplace Hotel",
@@ -42,7 +72,14 @@
       "city": "Mar del Plata",
       "street_name": "Av. Simon Laplace",
       "street_number": 5355,
-      "rate": 41870.00
+      "rate": 41870.00,
+      "amenities": [
+        "Wi-Fi",
+        "Desayuno",
+        "Gimnasio",
+        "Estacionamiento",
+        "Pileta"
+      ]
     },
     {
       "name": "Howard Johnson",
@@ -51,6 +88,15 @@
       "city": "Salta",
       "street_name": "Pte J Figueroa Alcorta",
       "street_number": 20,
-      "rate": 54230.00
+      "rate": 54230.00,
+      "amenities": [
+        "Wi-Fi",
+        "Gimnasio",
+        "Estacionamiento",
+        "Cochera cubierta",
+        "Pileta",
+        "Pileta climatizada",
+        "Sala de juegos"
+      ]
     }
 ]
