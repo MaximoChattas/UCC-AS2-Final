@@ -17,6 +17,7 @@ func mapUrls() {
 	router.GET("/reservation/:id", controller.GetReservationById)
 	router.GET("/reservation", controller.GetReservations)
 	router.DELETE("/reservation/:id", controller.DeleteReservation)
+	router.GET("/user/reservations/:id", controller.GetReservationsByUser)
 	router.GET("/available", controller.CheckAvailability)
 
 	log.Info("Finishing mappings configurations")

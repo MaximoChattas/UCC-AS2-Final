@@ -66,8 +66,7 @@ const ReservationDetails = () => {
         method: 'DELETE',
       });
       if (response.ok) {
-        //navigate(`/user/reservations/${userProfile.id}`)
-        navigate("/profile")
+        navigate(`/user/reservations/${userProfile.id}`)
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error);

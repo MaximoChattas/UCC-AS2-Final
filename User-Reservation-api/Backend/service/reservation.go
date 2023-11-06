@@ -23,6 +23,7 @@ type reservationServiceInterface interface {
 	InsertReservation(reservationDto dto.ReservationDto) (dto.ReservationDto, error)
 	GetReservationById(id int) (dto.ReservationDto, error)
 	GetReservations() (dto.ReservationsDto, error)
+	GetReservationsByUser(userId int) (dto.UserReservationsDto, error)
 	DeleteReservation(id int) error
 	getHotelInfo(hotelId string) (dto.HotelDto, error)
 	CheckAvailability(hotelId string, startDate time.Time, endDate time.Time) bool
@@ -57,10 +58,6 @@ func (s *reservationService) InsertReservation(reservationDto dto.ReservationDto
 
 	if timeStart.After(timeEnd) {
 		return reservationDto, errors.New("a reservation can't end before it starts")
-	}
-
-	if timeStart.Before(time.Now()) {
-		return reservationDto, errors.New("a reservation can't start before current time")
 	}
 
 	if s.CheckAvailability(reservationDto.HotelId, timeStart, timeEnd) {
@@ -127,6 +124,41 @@ func (s *reservationService) GetReservations() (dto.ReservationsDto, error) {
 	}
 
 	return reservationsDto, nil
+}
+
+func (s *reservationService) GetReservationsByUser(userId int) (dto.UserReservationsDto, error) {
+	var user model.User = client.GetUserById(userId)
+	var userReservationsDto dto.UserReservationsDto
+	var reservationsDto dto.ReservationsDto
+
+	if user.Id == 0 {
+		return userReservationsDto, errors.New("user not found")
+	}
+	var reservations model.Reservations = client.GetReservationsByUser(userId)
+
+	userReservationsDto.UserId = user.Id
+	userReservationsDto.UserName = user.Name
+	userReservationsDto.UserLastName = user.LastName
+	userReservationsDto.UserDni = user.Dni
+	userReservationsDto.UserEmail = user.Email
+	userReservationsDto.UserPassword = user.Password
+
+	for _, reservation := range reservations {
+		var reservationDto dto.ReservationDto
+
+		reservationDto.Id = reservation.Id
+		reservationDto.StartDate = reservation.StartDate
+		reservationDto.EndDate = reservation.EndDate
+		reservationDto.HotelId = reservation.HotelId
+		reservationDto.UserId = reservation.UserId
+		reservationDto.Amount = reservation.Amount
+
+		reservationsDto = append(reservationsDto, reservationDto)
+	}
+
+	userReservationsDto.Reservations = reservationsDto
+
+	return userReservationsDto, nil
 }
 
 func (s *reservationService) DeleteReservation(id int) error {
