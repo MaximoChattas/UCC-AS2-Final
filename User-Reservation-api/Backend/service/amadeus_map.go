@@ -71,15 +71,15 @@ func getAmadeusToken() {
 	url := "https://test.api.amadeus.com/v1/security/oauth2/token"
 	data := fmt.Sprintf("grant_type=client_credentials&client_id=%s&client_secret=%s", amadeusKey, amadeusSecret)
 
-	req, err := http.NewRequest("POST", url, strings.NewReader(data))
-	if err != nil {
-		log.Error("Error creating request:", err)
-		return
-	}
-
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-
 	for true {
+
+		req, err := http.NewRequest("POST", url, strings.NewReader(data))
+		if err != nil {
+			log.Error("Error creating request:", err)
+			return
+		}
+
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 		httpClient := http.Client{}
 		resp, err := httpClient.Do(req)
 		if err != nil {
