@@ -83,7 +83,7 @@ func UserLogin(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusAccepted, token)
+	c.JSON(http.StatusAccepted, gin.H{"token": token})
 }
 
 func generateToken(loginDto dto.UserDto) (string, error) {
