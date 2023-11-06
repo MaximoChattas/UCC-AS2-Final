@@ -99,9 +99,9 @@ const HotelDetails = () => {
           <div id={`carousel-${hotel.id}`} className="carousel slide" data-bs-ride="carousel">
             <div className="carousel-inner">
               {hotel.images.map((image) => (
-                  <div key={image.id} className={`carousel-item ${image.id === hotel.images[index].id ? 'active' : ''}`}>
+                  <div key={image} className={`carousel-item ${image === hotel.images[index] ? 'active' : ''}`}>
                     <img
-                        src={`http://localhost:8090/image/${image.id}`}
+                        src={`http://localhost:8080/image?name=${image}`}
                         className="d-block w-100 carousel-img"
                         alt={image.id}
                     />

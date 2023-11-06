@@ -58,7 +58,7 @@ const HotelList = () => {
           <div key={hotel.id} className="col-md-4 mb-4">
             <div className="card">
                 {hotel.images &&
-                    <img className="card-img-top" alt={`Image for ${hotel.name}`} src={`http://localhost:8090/image/${hotel.images[0].id}`}/>}
+                    <img className="card-img-top" alt={`Image for ${hotel.name}`} src={`http://localhost:8080/image/?name=${hotel.images[0]}`}/>}
               <div className="card-body">
                 <h5 className="card-title">
                     <Link to={`/hotel/${hotel.id}`}>

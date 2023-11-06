@@ -92,7 +92,7 @@ const HotelAvailable = () => {
               {hotel.images &&
                   <img className="card-img-top"
                        alt={`Image for ${hotel.name}`}
-                       src={`http://localhost:8090/image/${hotel.images[0].id}`}
+                       src={`http://localhost:8080/image?name=${hotel.images[0]}`}
                   />}
               <div className="card-body">
                 <h5 className="card-title">
