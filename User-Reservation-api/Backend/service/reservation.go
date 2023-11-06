@@ -60,10 +60,6 @@ func (s *reservationService) InsertReservation(reservationDto dto.ReservationDto
 		return reservationDto, errors.New("a reservation can't end before it starts")
 	}
 
-	if timeStart.Before(time.Now()) {
-		return reservationDto, errors.New("a reservation can't start before current time")
-	}
-
 	if s.CheckAvailability(reservationDto.HotelId, timeStart, timeEnd) {
 		var reservation model.Reservation
 
