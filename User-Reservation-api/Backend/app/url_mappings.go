@@ -20,5 +20,8 @@ func mapUrls() {
 	router.GET("/user/reservations/:id", controller.GetReservationsByUser)
 	router.GET("/available", controller.CheckAvailability)
 
+	router.POST("/amadeus", controller.InsertAmadeusMap)
+	router.GET("/amadeus/:hotel_id", controller.GetAmadeusIdByHotelId)
+
 	log.Info("Finishing mappings configurations")
 }
