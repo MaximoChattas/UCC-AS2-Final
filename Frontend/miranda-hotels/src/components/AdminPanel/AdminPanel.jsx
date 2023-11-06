@@ -1,14 +1,13 @@
 import React, { useContext } from "react";
 import { useNavigate } from 'react-router-dom';
-import { LoginContext, UserProfileContext } from '../../App';
+import { UserProfileContext } from '../../App';
 import "./AdminPanel.css"
 
 function AdminPanel() {
-    const { loggedIn } = useContext(LoginContext);
     const { userProfile } = useContext(UserProfileContext);
     const navigate = useNavigate();
 
-    if (!loggedIn || userProfile.role !== "Admin") {
+    if (!userProfile || userProfile.role !== "Admin") {
         return null;
       }
 

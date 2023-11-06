@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { LoginContext, UserProfileContext } from '../../App';
+import { UserProfileContext } from '../../App';
 import { Link } from "react-router-dom";
 import Navbar from "../NavBar/NavBar";
 
@@ -8,7 +8,6 @@ const AdminUserReservations = () => {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
   const { userProfile } = useContext(UserProfileContext);
-  const { loggedIn } = useContext(LoginContext);
 
   useEffect(() => {
     const fetchUserReservations = async () => {
@@ -46,7 +45,7 @@ const AdminUserReservations = () => {
     return <div>Loading...</div>;
   }
 
-  if (!loggedIn || userProfile.role !== "Admin") {
+  if (!userProfile || userProfile.role !== "Admin") {
     return (
       <>
         <Navbar />

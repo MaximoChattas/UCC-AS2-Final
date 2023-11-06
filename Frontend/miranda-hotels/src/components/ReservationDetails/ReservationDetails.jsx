@@ -26,7 +26,7 @@ const ReservationDetails = () => {
           const data = await response.json();
           setReservation(data);
 
-          const hotelResponse = await fetch(`http://localhost:8090/hotel/${data.hotel_id}`);
+          const hotelResponse = await fetch(`http://localhost:8085/hotel/${data.hotel_id}`);
           if (hotelResponse.ok) {
             const hotelData = await hotelResponse.json();
             setHotel(hotelData);
@@ -66,7 +66,8 @@ const ReservationDetails = () => {
         method: 'DELETE',
       });
       if (response.ok) {
-        navigate(`/user/reservations/${userProfile.id}`)
+        //navigate(`/user/reservations/${userProfile.id}`)
+        navigate("/profile")
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error);

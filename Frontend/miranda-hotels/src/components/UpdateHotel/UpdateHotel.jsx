@@ -1,12 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { LoginContext, UserProfileContext } from '../../App';
+import { UserProfileContext } from '../../App';
 import Navbar from '../NavBar/NavBar';
 import '../LoadHotel/LoadHotel.css';
+import {da} from "react-date-range/dist/locale/index.js";
 
 function UpdateHotel() {
     const { id } = useParams();
     const [name, setName] = useState('');
+    const [city, setCity] = useState('');
     const [street_name, setStreet_name] = useState('');
     const [street_number, setStreet_number] = useState('');
     const [room_amount, setRoom_amount] = useState('');
@@ -15,7 +17,6 @@ function UpdateHotel() {
     const [amenities, setAmenities] = useState([]);
     const [selectedAmenities, setSelectedAmenities] = useState([]);
 
-    const { loggedIn } = useContext(LoginContext);
     const { userProfile } = useContext(UserProfileContext);
 
     const [error, setError] = useState('');
@@ -25,12 +26,13 @@ function UpdateHotel() {
     useEffect(() => {
         const fetchHotelDetails = async () => {
             try {
-                const response = await fetch(`http://localhost:8090/hotel/${id}`);
+                const response = await fetch(`http://localhost:8080/hotel/${id}`);
                 if (response.ok) {
                     const data = await response.json();
 
                     setName(data.name);
                     setStreet_name(data.street_name);
+                    setCity(data.city)
                     setStreet_number(data.street_number.toString());
                     setRoom_amount(data.room_amount.toString());
                     setRate(data.rate.toString());
@@ -58,13 +60,14 @@ function UpdateHotel() {
                 throw new Error('Complete todos los campos requeridos');
             }
 
-            const response = await fetch(`http://localhost:8090/hotel/${id}`, {
+            const response = await fetch(`http://localhost:8080/hotel/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     name,
+                    city,
                     street_name,
                     street_number: parseInt(street_number),
                     room_amount: parseInt(room_amount),
@@ -98,7 +101,7 @@ function UpdateHotel() {
     useEffect(() => {
         const fetchAmenities = async () => {
             try {
-                const response = await fetch('http://localhost:8090/amenity');
+                const response = await fetch('http://localhost:8080/amenity');
                 if (response.ok) {
                     const data = await response.json();
                     setAmenities(data);
@@ -115,7 +118,7 @@ function UpdateHotel() {
         fetchAmenities();
     }, []);
 
-    if (!loggedIn || userProfile.role !== 'Admin') {
+    if (!userProfile || userProfile.role !== 'Admin') {
         return (
             <>
                 <Navbar />
@@ -133,6 +136,10 @@ function UpdateHotel() {
                     <div>
                         <label>Nombre:</label>
                         <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                    </div>
+                    <div>
+                        <label>Ciudad:</label>
+                        <input type="text" value={city} onChange={(e) => setCity(e.target.value)} />
                     </div>
                     <div>
                         <label>Calle:</label>

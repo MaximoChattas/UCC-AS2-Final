@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { LoginContext, UserProfileContext } from '../../App';
+import { UserProfileContext } from '../../App';
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Navbar from "../NavBar/NavBar";
@@ -11,7 +11,6 @@ const UserReservations = () => {
   const [hotels, setHotels] = useState([]);
   const [error, setError] = useState(null);
   const { userProfile } = useContext(UserProfileContext);
-  const { loggedIn } = useContext(LoginContext);
 
   useEffect(() => {
     const fetchUserReservations = async () => {
@@ -21,7 +20,7 @@ const UserReservations = () => {
           const data = await response.json();
           setUserReservations(data);
 
-          const hotelResponse = await fetch(`http://localhost:8090/hotel`);
+          const hotelResponse = await fetch(`http://localhost:8085/hotel`);
             if (hotelResponse.ok) {
             const hotelData = await hotelResponse.json();
             setHotels(hotelData);
@@ -50,7 +49,7 @@ const UserReservations = () => {
     return <div>Loading...</div>;
   }
 
-  if (!loggedIn || ((userReservations.user_id !== userProfile.id) && (userProfile.role !== "Admin"))) {
+  if (!userProfile || ((userReservations.user_id !== userProfile.id) && (userProfile.role !== "Admin"))) {
     return (
         <>
             <Navbar />

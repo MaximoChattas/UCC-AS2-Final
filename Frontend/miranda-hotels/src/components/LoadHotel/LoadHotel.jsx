@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LoginContext, UserProfileContext } from '../../App';
+import { UserProfileContext } from '../../App';
 import Navbar from '../NavBar/NavBar';
 import './LoadHotel.css';
 
 function LoadHotel() {
     const [name, setName] = useState('');
+    const [city, setCity] = useState('');
     const [street_name, setStreet_name] = useState('');
     const [street_number, setStreet_number] = useState('');
     const [room_amount, setRoom_amount] = useState('');
@@ -18,7 +19,6 @@ function LoadHotel() {
     const [hotelId, setHotelId] = useState('');
     const [isLoaded, setIsLoaded] = useState(false)
 
-    const { loggedIn } = useContext(LoginContext);
     const { userProfile } = useContext(UserProfileContext);
 
     const [error, setError] = useState('');
@@ -34,7 +34,7 @@ function LoadHotel() {
                 throw new Error('Complete todos los campos requeridos');
             }
 
-            const response = await fetch('http://localhost:8090/hotel', {
+            const response = await fetch('http://localhost:8080/hotel', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -42,6 +42,7 @@ function LoadHotel() {
                 body: JSON.stringify({
                     name,
                     street_name,
+                    city,
                     street_number: parseInt(street_number),
                     room_amount: parseInt(room_amount),
                     rate: parseFloat(rate),
@@ -75,7 +76,7 @@ function LoadHotel() {
                 formData.append('images', image);
             });
 
-            const response = await fetch(`http://localhost:8090/hotel/${hotelId}/images`, {
+            const response = await fetch(`http://localhost:8080/hotel/${hotelId}/images`, {
                 method: 'POST',
                 body: formData,
             });
@@ -103,7 +104,7 @@ function LoadHotel() {
     useEffect(() => {
         const fetchAmenities = async () => {
             try {
-                const response = await fetch('http://localhost:8090/amenity');
+                const response = await fetch('http://localhost:8080/amenity');
                 if (response.ok) {
                     const data = await response.json();
                     setAmenities(data);
@@ -125,7 +126,7 @@ function LoadHotel() {
         setImages(files);
     };
 
-    if (!loggedIn || userProfile.role !== 'Admin') {
+    if (!userProfile || userProfile.role !== 'Admin') {
         return (
             <>
                 <Navbar />
@@ -144,6 +145,10 @@ function LoadHotel() {
                     <div>
                         <label>Nombre:</label>
                         <input type="text" disabled={isLoaded} value={name} onChange={(e) => setName(e.target.value)} />
+                    </div>
+                    <div>
+                        <label>Ciudad:</label>
+                        <input type="text" disabled={isLoaded} value={city} onChange={(e) => setCity(e.target.value)} />
                     </div>
                     <div>
                         <label>Calle:</label>

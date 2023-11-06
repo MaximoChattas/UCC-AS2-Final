@@ -35,7 +35,7 @@ const Reservation = ({ hotel_id, hotelRate, startDate, endDate }) => {
     try {
       const reservationData = {
         user_id: parseInt(userProfile.id),
-        hotel_id: parseInt(hotel_id),
+        hotel_id: hotel_id,
         start_date: format(checkInDate, "dd-MM-yyyy HH:mm"),
         end_date: format(checkoutDate, "dd-MM-yyyy HH:mm"),
       };

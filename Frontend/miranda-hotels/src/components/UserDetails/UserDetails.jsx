@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoginContext, UserProfileContext } from '../../App';
+import { UserProfileContext } from '../../App';
 import { useParams } from "react-router-dom";
 import "./UserDetails.css"
 import Navbar from "../NavBar/NavBar";
@@ -9,7 +9,6 @@ const UserDetails = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
-  const { loggedIn } = useContext(LoginContext);
   const { userProfile } = useContext(UserProfileContext);
   const navigate = useNavigate()
 
@@ -45,7 +44,7 @@ const UserDetails = () => {
     return <div>Loading...</div>;
   }
 
-  if (!loggedIn || userProfile.role !== "Admin") {
+  if (!userProfile || userProfile.role !== "Admin") {
     return (
       <>
         <Navbar />
