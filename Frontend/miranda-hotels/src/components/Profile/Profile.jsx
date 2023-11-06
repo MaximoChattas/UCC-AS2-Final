@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { useNavigate } from 'react-router-dom';
 import Navbar from "../NavBar/NavBar";
 import { LoginContext, UserProfileContext } from '../../App';
@@ -6,19 +6,39 @@ import AdminPanel from "../AdminPanel/AdminPanel";
 import "./Profile.css"
 
 function Profile() {
-    const { loggedIn, setLoggedIn } = useContext(LoginContext);
     const { userProfile, setUserProfile } = useContext(UserProfileContext);
+    const [userData, setUserData] = useState({});
+    const { error, setError } = useState(null)
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            if (userProfile) {
+                try {
+                    const response = await fetch(`http://localhost:8090/user/${userProfile.id}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        setUserData(data);
+                    } else {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error);
+                    }
+                } catch (error) {
+                    setError(error.message);
+                }
+            }
+        };
+        fetchUserData();
+    }, [userProfile]);
+
 
     const handleLogout = () => {
         localStorage.removeItem('token');
-        localStorage.removeItem('userProfile');
-        setLoggedIn(false);
         setUserProfile(null);
         navigate('/');
     };
 
-    if (!loggedIn) {
+    if (!userProfile) {
         return (
             <>
                 <Navbar />
@@ -29,27 +49,35 @@ function Profile() {
         )
       }
 
-    const reservationURL = "/user/reservations/"+userProfile.id;
+    if (error) {
+        return (
+            <>
+                <Navbar />
+                <div className="fullscreen">Error: {error}</div>
+            </>
+        );
+    }
 
-    return (
-        <>
-            <Navbar />
-            <div className="descripcion">
-                <h3>Perfil de Usuario</h3>
-                <p>Nombre: {userProfile.name}</p>
-                <p>Apellido: {userProfile.last_name}</p>
-                <p>DNI: {userProfile.dni}</p>
-                <p>Email: {userProfile.email}</p>
-                <p>Nº de Usuario: {userProfile.id}</p>
-                <div>
-                    {userProfile.role === "Customer" && <button className="button" onClick={()=>navigate(reservationURL)}> Mis Reservas </button>}
-                    {userProfile.role === "Customer" && <button className="button" onClick={()=>navigate("/user/reservations/range")}> Reservas por Rango </button>}
-                    <button className="button" onClick={handleLogout}>Cerrar Sesión</button>
+    if (userData) {
+        return (
+            <>
+                <Navbar />
+                <div className="descripcion">
+                    <h3>Perfil de Usuario</h3>
+                    <p>Nombre: {userData.name}</p>
+                    <p>Apellido: {userData.last_name}</p>
+                    <p>DNI: {userData.dni}</p>
+                    <p>Email: {userData.email}</p>
+                    <p>Nº de Usuario: {userData.id}</p>
+                    <div>
+                        {userProfile.role === "Customer" && <button className="button" onClick={()=>navigate(`/user/reservations/${userProfile.id}`)}> Mis Reservas </button>}
+                        <button className="button" onClick={handleLogout}>Cerrar Sesión</button>
+                    </div>
+                    <AdminPanel />
                 </div>
-                <AdminPanel />
-            </div>
-        </>
-    )
+            </>
+        )
+    }
 }
 
 export default Profile;

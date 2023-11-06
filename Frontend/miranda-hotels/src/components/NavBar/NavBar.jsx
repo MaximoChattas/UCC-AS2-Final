@@ -4,7 +4,7 @@ import { LoginContext, UserProfileContext } from '../../App';
 import'./NavBar.css';
 
 function Navbar() {
-  const { loggedIn } = useContext(LoginContext);
+
   const { userProfile } = useContext(UserProfileContext);
 
   return (
@@ -17,7 +17,7 @@ function Navbar() {
            <NavLink className="nav-link" to="/hotel/availability">
               <button className="boton">Ver Disponibilidad</button>
             </NavLink>
-          {loggedIn ? (
+          {userProfile ? (
             <NavLink className="nav-link" to="/profile">
               <button className="boton">Hola {userProfile.name}</button>
             </NavLink>

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import Navbar from '../NavBar/NavBar';
 import './Login.css'
-import { LoginContext, UserProfileContext } from '../../App';
+import { UserProfileContext } from '../../App';
 
 function Login() {
   const [loading, setLoading] = useState(false);
@@ -12,16 +12,13 @@ function Login() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const { loggedIn, setLoggedIn } = useContext(LoginContext);
   const { userProfile, setUserProfile } = useContext(UserProfileContext);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const userProfileData = localStorage.getItem('userProfile');
-  
-    if (token && userProfileData) {
-      setLoggedIn(true);
-      setUserProfile(JSON.parse(userProfileData));
+
+    if (token) {
+      setUserProfile(jwt_decode(token));
     }
   }, []);
   
@@ -40,11 +37,10 @@ function Login() {
       });
   
       if (response.status === 202) {
-        const { token, user } = await response.json();
+        const { token } = await response.json();
         localStorage.setItem('token', token);
-        localStorage.setItem('userProfile', JSON.stringify(user));
-        setLoggedIn(true);
-        setUserProfile(user);
+        console.log(token)
+        setUserProfile(jwt_decode(token));
         navigate('/');
       } else {
         const data = await response.json();
@@ -60,7 +56,6 @@ function Login() {
   };
 
   return (
-    <LoginContext.Provider value={{ loggedIn, setLoggedIn }}>
     <UserProfileContext.Provider value={{ userProfile, setUserProfile }}>
       <>
         <Navbar />
@@ -97,7 +92,6 @@ function Login() {
         </div>
       </>
     </UserProfileContext.Provider>
-  </LoginContext.Provider>
   );
 }
 

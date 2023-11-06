@@ -13,7 +13,6 @@ import AdminUserReservations from "./components/AdminUserReservations/AdminUserR
 import UserDetails from "./components/UserDetails/UserDetails";
 import "./App.css"
 import HotelAvailable from "./components/HotelAvailable/HotelAvailable";
-import UserReservationsRange from "./components/UserReservationsRange/UserReservationsRange";
 import LoadAmenity from "./components/LoadAmenity/LoadAmenity.jsx";
 import UpdateHotel from "./components/UpdateHotel/UpdateHotel.jsx";
 
@@ -41,7 +40,6 @@ const App = () => {
             <Route path="/loadhotel" element={<LoadHotel />} />
             <Route path="/reservation/:id" element={<ReservationDetails />} />
             <Route path="/user/reservations/:id" element={<UserReservations />} />
-            <Route path="/user/reservations/range" element={<UserReservationsRange />} />
             <Route path="/admin/reservations/hotel" element={<AdminHotelReservations />} />
             <Route path="/admin/reservations/user" element={<AdminUserReservations />} />
             <Route path="/hotel/availability" element={<HotelAvailable />} />
