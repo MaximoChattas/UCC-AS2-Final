@@ -16,8 +16,6 @@ import HotelAvailable from "./components/HotelAvailable/HotelAvailable";
 import LoadAmenity from "./components/LoadAmenity/LoadAmenity.jsx";
 import UpdateHotel from "./components/UpdateHotel/UpdateHotel.jsx";
 
-// Create the LoginContext
-export const LoginContext = React.createContext();
 
 // Create the UserProfileContext
 export const UserProfileContext = React.createContext();
@@ -28,7 +26,6 @@ const App = () => {
 
   return (
     <div className="menu">
-      <LoginContext.Provider value={{ loggedIn, setLoggedIn }}>
         <UserProfileContext.Provider value={{ userProfile, setUserProfile }}>
           <Routes>
             <Route path="/" exact element={<HotelList />} />
@@ -47,7 +44,6 @@ const App = () => {
             <Route path="/updatehotel/:id" element={<UpdateHotel />} />
           </Routes>
         </UserProfileContext.Provider>
-      </LoginContext.Provider>
     </div>
   );
 };

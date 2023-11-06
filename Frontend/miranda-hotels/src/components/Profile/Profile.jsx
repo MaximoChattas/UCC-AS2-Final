@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import { useNavigate } from 'react-router-dom';
 import Navbar from "../NavBar/NavBar";
-import { LoginContext, UserProfileContext } from '../../App';
+import { UserProfileContext } from '../../App';
 import AdminPanel from "../AdminPanel/AdminPanel";
 import "./Profile.css"
 

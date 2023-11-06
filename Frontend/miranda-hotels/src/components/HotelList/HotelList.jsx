@@ -1,13 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../NavBar/NavBar";
-import { LoginContext } from '../../App';
 import "./HotelList.css"
 
 const HotelList = () => {
   const [hotels, setHotels] = useState([]);
   const [error, setError] = useState(null);
-  const { loggedIn } = useContext(LoginContext)
 
   useEffect(() => {
     const fetchHotels = async () => {

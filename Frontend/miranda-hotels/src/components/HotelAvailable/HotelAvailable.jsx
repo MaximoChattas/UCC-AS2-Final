@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { LoginContext } from '../../App';
 import Navbar from "../NavBar/NavBar";
 import "../HotelList/HotelList.css";
 import Calendar from "../Calendar/Calendar";
@@ -14,8 +13,6 @@ const HotelAvailable = () => {
     startDate: new Date(),
     endDate: new Date(),
   });
-
-  const { loggedIn } = useContext(LoginContext);
 
   const fetchHotels = async () => {
     try {

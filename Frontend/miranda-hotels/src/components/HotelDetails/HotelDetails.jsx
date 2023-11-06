@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { LoginContext, UserProfileContext } from '../../App';
+import { UserProfileContext } from '../../App';
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../NavBar/NavBar";
 import Calendar from "../Calendar/Calendar";
@@ -13,7 +13,6 @@ const HotelDetails = () => {
   const [index, setIndex] = useState(0);
   const [deleteError, setDeleteError] = useState(null);
   const { userProfile } = useContext(UserProfileContext);
-  const { loggedIn } = useContext(LoginContext);
   const [selectedDates, setSelectedDates] = useState({
     startDate: new Date(),
     endDate: new Date(),

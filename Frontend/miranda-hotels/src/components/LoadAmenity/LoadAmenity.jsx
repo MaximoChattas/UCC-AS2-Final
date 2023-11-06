@@ -1,13 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LoginContext, UserProfileContext } from '../../App';
+import { UserProfileContext } from '../../App';
 import Navbar from '../NavBar/NavBar';
 import './LoadAmenity.css';
 
 function LoadAmenity() {
     const [name, setName] = useState('');
 
-    const { loggedIn } = useContext(LoginContext);
     const { userProfile } = useContext(UserProfileContext);
 
     const [error, setError] = useState('');
@@ -22,7 +21,7 @@ function LoadAmenity() {
                 throw new Error('Complete todos los campos requeridos');
             }
 
-            const response = await fetch('http://localhost:8090/amenity', {
+            const response = await fetch('http://localhost:8080/amenity', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -46,7 +45,7 @@ function LoadAmenity() {
     };
 
 
-    if (!loggedIn || userProfile.role !== 'Admin') {
+    if (!userProfile || userProfile.role !== 'Admin') {
         return (
             <>
                 <Navbar />
