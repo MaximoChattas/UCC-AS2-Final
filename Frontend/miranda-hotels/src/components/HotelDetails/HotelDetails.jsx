@@ -11,7 +11,9 @@ const HotelDetails = () => {
   const [hotel, setHotel] = useState(null);
   const [error, setError] = useState(null);
   const [index, setIndex] = useState(0);
-  const [deleteError, setDeleteError] = useState(null);
+  const [adminError, setAdminError] = useState(null);
+  const [amadeusId, setAmadeusId] = useState('');
+  const [showAmadeusForm, setShowAmadeusForm] = useState(false)
   const { userProfile } = useContext(UserProfileContext);
   const [selectedDates, setSelectedDates] = useState({
     startDate: new Date(),
@@ -54,9 +56,47 @@ const HotelDetails = () => {
         throw new Error(errorData.error);
       }
     } catch (error) {
-      setDeleteError(error.message);
+      setAdminError(error.message);
     }
   };
+
+  const handleAmadeusSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:8090/amadeus", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          hotel_id: id,
+          amadeus_id: amadeusId
+        }),
+      });
+
+      if (response.status === 201) {
+        setAmadeusId('');
+        setShowAmadeusForm(false);
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error);
+      }
+    } catch (error) {
+      setAdminError(error.message);
+    }
+  };
+
+  const amadeusForm = showAmadeusForm && (
+      <form onSubmit={handleAmadeusSubmit}>
+        <input
+            type="text"
+            placeholder="Ingrese ID de Amadeus"
+            value={amadeusId}
+            onChange={(e) => setAmadeusId(e.target.value)}
+        />
+        <button type="submit">Submit</button>
+      </form>
+  );
 
   if (error) {
     return (
@@ -156,7 +196,16 @@ const HotelDetails = () => {
             <div>
               <button className="admin-button" onClick={() => navigate(`/updatehotel/${id}`)}>Modificar Hotel</button>
               <button className="admin-button" onClick={handleDeleteHotel}>Borrar Hotel</button>
-              {deleteError && <p className="error-message">{deleteError}</p>}
+              <div>
+                {showAmadeusForm ? (
+                    amadeusForm
+                ) : (
+                    <button onClick={() => setShowAmadeusForm(true)}>
+                      Agregar ID Amadeus
+                    </button>
+                )}
+              </div>
+              {adminError && <p className="error-message">{adminError}</p>}
             </div>
         )}
       </div>
