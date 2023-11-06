@@ -57,6 +57,20 @@ func GetReservations(c *gin.Context) {
 	c.JSON(http.StatusOK, reservationsDto)
 }
 
+func GetReservationsByUser(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var userReservations dto.UserReservationsDto
+
+	userReservations, err := service.ReservationService.GetReservationsByUser(id)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, userReservations)
+}
+
 func DeleteReservation(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
