@@ -80,31 +80,33 @@ const HotelAvailable = () => {
   return (
     <>
       <Navbar />
-      <h2>Hoteles Disponibles</h2>
-      <h5>{city}, {formattedStartDate} - {formattedEndDate}</h5>
-      <div className="row">
-        {hotels.map((hotel) => (
-          <div key={hotel.id} className="col-md-4 mb-4">
-            <div className="card">
-              {hotel.images &&
-                  <img className="card-img-top"
-                       alt={`Image for ${hotel.name}`}
-                       src={`http://localhost:8080/image?name=${hotel.images[0]}`}
-                  />}
-              <div className="card-body">
-                <h5 className="card-title">
-                  <Link to={`/hotel/${hotel.id}`}>
-                    {hotel.name}
-                  </Link>
-                </h5>
-                <p className="card-text">
-                  Dirección: {hotel.street_name} {hotel.street_number}
-                </p>
-                <p className="card-text">${hotel.rate}</p>
+      <div className="fullscreen">
+        <h2>Hoteles Disponibles</h2>
+        <h5>{city}, {formattedStartDate} - {formattedEndDate}</h5>
+        <div className="row">
+          {hotels.map((hotel) => (
+              <div key={hotel.id} className="col-md-4 mb-4">
+                <div className="card">
+                  {hotel.images &&
+                      <img className="card-img-top"
+                           alt={`Image for ${hotel.name}`}
+                           src={`http://localhost:8080/image?name=${hotel.images[0]}`}
+                      />}
+                  <div className="card-body">
+                    <h5 className="card-title">
+                      <Link to={`/hotel/${hotel.id}`}>
+                        {hotel.name}
+                      </Link>
+                    </h5>
+                    <p className="card-text">
+                      Dirección: {hotel.street_name} {hotel.street_number}
+                    </p>
+                    <p className="card-text">${hotel.rate}</p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </>
   );
