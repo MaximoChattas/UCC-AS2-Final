@@ -41,8 +41,6 @@ services:
     depends_on:
       - mongodatabase
 
-
-
   mongodatabase:
     image: mongo
     ports:
