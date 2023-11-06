@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+	"io"
 	"net/http"
+	"os"
 	"path"
 )
 
@@ -135,4 +137,29 @@ func InsertImages(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, hotelDto)
+}
+
+func GetImageByName(c *gin.Context) {
+
+	name := c.Query("name")
+
+	filePath := "Images/" + name
+
+	file, err := os.Open(filePath)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	defer file.Close()
+
+	c.Header("Content-Type", "image/jpg")
+
+	_, err = io.Copy(c.Writer, file)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 }
