@@ -3,7 +3,10 @@ package controller
 import (
 	"Search/dto"
 	"Search/service"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
+	"io"
 	"net/http"
 )
 
@@ -40,4 +43,43 @@ func GetHotels(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, hotelsDto)
+}
+
+func InsertData() {
+
+	resp, err := http.Get("http://hotel:8080/hotel")
+
+	if err != nil {
+		log.Error("Error in HTTP request: ", err)
+		return
+	}
+
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+
+	if err != nil {
+		log.Error("Error reading response: ", err)
+		return
+	}
+
+	var hotelsDto dto.HotelsDto
+
+	err = json.Unmarshal(body, &hotelsDto)
+
+	if err != nil {
+		log.Error("Error parsing JSON: ", err)
+		return
+	}
+
+	log.Debug(hotelsDto)
+
+	for _, hotel := range hotelsDto {
+
+		err = service.HotelService.InsertUpdateHotel(hotel)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+	}
+
 }
