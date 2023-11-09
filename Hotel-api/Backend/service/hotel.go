@@ -7,6 +7,9 @@ import (
 	"Hotel/queue"
 	"encoding/json"
 	"errors"
+	"github.com/karlseguin/ccache/v3"
+	log "github.com/sirupsen/logrus"
+	"time"
 )
 
 type hotelService struct{}
@@ -20,9 +23,11 @@ type hotelServiceInterface interface {
 }
 
 var HotelService hotelServiceInterface
+var cache *ccache.Cache[dto.HotelDto]
 
 func init() {
 	HotelService = &hotelService{}
+	cache = ccache.New(ccache.Configure[dto.HotelDto]())
 }
 
 func (s *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) {
@@ -68,6 +73,8 @@ func (s *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) 
 		return hotelDto, err
 	}
 
+	cache.Set(hotelDto.Id, hotelDto, 1*time.Hour)
+
 	return hotelDto, nil
 }
 
@@ -97,8 +104,16 @@ func (s *hotelService) GetHotels() (dto.HotelsDto, error) {
 
 func (s *hotelService) GetHotelById(id string) (dto.HotelDto, error) {
 
-	var hotel model.Hotel = client.HotelClient.GetHotelById(id)
+	item := cache.Get(id)
+
+	if item != nil {
+		log.Info("Data retrieved from local cache")
+		return item.Value(), nil
+	}
+
 	var hotelDto dto.HotelDto
+
+	hotel := client.HotelClient.GetHotelById(id)
 
 	if hotel.Id.Hex() == "000000000000000000000000" {
 		return hotelDto, errors.New("hotel not found")
@@ -122,6 +137,8 @@ func (s *hotelService) GetHotelById(id string) (dto.HotelDto, error) {
 
 		hotelDto.Amenities = append(hotelDto.Amenities, amenityName)
 	}
+
+	cache.Set(id, hotelDto, 1*time.Hour)
 
 	return hotelDto, nil
 }
@@ -152,6 +169,8 @@ func (s *hotelService) DeleteHotel(id string) error {
 	if err != nil {
 		return err
 	}
+
+	cache.Delete(hotel.Id.Hex())
 
 	return err
 }
@@ -205,6 +224,8 @@ func (s *hotelService) UpdateHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) 
 	if err != nil {
 		return hotelDto, err
 	}
+
+	cache.Set(hotelDto.Id, hotelDto, 1*time.Hour)
 
 	return hotelDto, nil
 
