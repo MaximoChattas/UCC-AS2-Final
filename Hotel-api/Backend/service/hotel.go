@@ -206,6 +206,8 @@ func (s *hotelService) UpdateHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) 
 		hotel.Images = append(hotel.Images, image)
 	}
 
+	hotelDto.Images = hotel.Images
+
 	hotel = client.HotelClient.UpdateHotelById(hotel)
 
 	if hotel.Id.Hex() == "000000000000000000000000" {
