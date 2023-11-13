@@ -9,6 +9,6 @@ import (
 func main() {
 
 	db.Init_db()
-	queue.InitQueue()
+	queue.QueueProducer.InitQueue()
 	app.StartRoute()
 }

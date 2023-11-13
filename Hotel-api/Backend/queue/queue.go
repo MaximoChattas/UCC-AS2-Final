@@ -13,6 +13,7 @@ var channel *amqp.Channel
 type queueProducer struct{}
 
 type queueProducerInterface interface {
+	InitQueue()
 	Publish(body []byte) error
 }
 
@@ -22,7 +23,7 @@ func init() {
 	QueueProducer = queueProducer{}
 }
 
-func InitQueue() {
+func (q queueProducer) InitQueue() {
 	conn, err := amqp.Dial("amqp://user:password@rabbitmq:5672/")
 	if err != nil {
 		log.Info("Failed to connect to RabbitMQ")
