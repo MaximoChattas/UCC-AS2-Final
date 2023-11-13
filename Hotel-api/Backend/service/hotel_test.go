@@ -15,19 +15,19 @@ import (
 	"testing"
 )
 
-type testClient struct{}
+type testHotel struct{}
 type testQueue struct{}
 
 var channel wabbit.Channel
 var mockQueue wabbit.Queue
 
 func init() {
-	client.HotelClient = testClient{}
+	client.HotelClient = testHotel{}
 	queue.QueueProducer = testQueue{}
 	queue.QueueProducer.InitQueue()
 }
 
-func (t testClient) InsertHotel(hotel model.Hotel) model.Hotel {
+func (t testHotel) InsertHotel(hotel model.Hotel) model.Hotel {
 
 	if hotel.Name != "" {
 		objId, _ := primitive.ObjectIDFromHex("654cf68d807298d99186019f")
@@ -37,7 +37,7 @@ func (t testClient) InsertHotel(hotel model.Hotel) model.Hotel {
 	return hotel
 }
 
-func (t testClient) GetHotelById(id string) model.Hotel {
+func (t testHotel) GetHotelById(id string) model.Hotel {
 	if id == "000000000000000000000000" {
 		return model.Hotel{}
 	}
@@ -49,11 +49,11 @@ func (t testClient) GetHotelById(id string) model.Hotel {
 	}
 }
 
-func (t testClient) GetHotels() model.Hotels {
+func (t testHotel) GetHotels() model.Hotels {
 	return model.Hotels{}
 }
 
-func (t testClient) DeleteHotelById(id string) error {
+func (t testHotel) DeleteHotelById(id string) error {
 
 	if id == "000000000000000000000000" {
 		return errors.New("hotel not found")
@@ -62,7 +62,7 @@ func (t testClient) DeleteHotelById(id string) error {
 	return nil
 }
 
-func (t testClient) UpdateHotelById(hotel model.Hotel) model.Hotel {
+func (t testHotel) UpdateHotelById(hotel model.Hotel) model.Hotel {
 
 	if hotel.Id.Hex() == "000000000000000000000000" {
 		return model.Hotel{}
