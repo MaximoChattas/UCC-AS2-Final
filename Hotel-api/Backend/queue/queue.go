@@ -10,6 +10,18 @@ import (
 var queue amqp.Queue
 var channel *amqp.Channel
 
+type queueProducer struct{}
+
+type queueProducerInterface interface {
+	Publish(body []byte) error
+}
+
+var QueueProducer queueProducerInterface
+
+func init() {
+	QueueProducer = queueProducer{}
+}
+
 func InitQueue() {
 	conn, err := amqp.Dial("amqp://user:password@rabbitmq:5672/")
 	if err != nil {
@@ -44,7 +56,7 @@ func InitQueue() {
 	}
 }
 
-func Publish(body []byte) error {
+func (q queueProducer) Publish(body []byte) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

@@ -67,7 +67,7 @@ func (s *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) 
 
 	jsonBody, _ := json.Marshal(body)
 
-	err := queue.Publish(jsonBody)
+	err := queue.QueueProducer.Publish(jsonBody)
 
 	if err != nil {
 		return hotelDto, err
@@ -164,7 +164,7 @@ func (s *hotelService) DeleteHotel(id string) error {
 
 	jsonBody, _ := json.Marshal(body)
 
-	err = queue.Publish(jsonBody)
+	err = queue.QueueProducer.Publish(jsonBody)
 
 	if err != nil {
 		return err
@@ -219,7 +219,7 @@ func (s *hotelService) UpdateHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) 
 
 	jsonBody, _ := json.Marshal(body)
 
-	err := queue.Publish(jsonBody)
+	err := queue.QueueProducer.Publish(jsonBody)
 
 	if err != nil {
 		return hotelDto, err
