@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var MongoDb *mongo.Database
+var mongoDb *mongo.Database
 var client *mongo.Client
 
 var HotelsCollection *mongo.Collection
@@ -39,12 +39,12 @@ func Init_db() {
 		log.Fatal(err)
 	}
 
-	MongoDb = client.Database("test")
+	mongoDb = client.Database("test")
 
 	fmt.Println("Available datatabases:")
 	fmt.Println(dbNames)
 
-	HotelsCollection = MongoDb.Collection("hotels")
-	AmenitiesCollection = MongoDb.Collection("amenities")
+	HotelsCollection = mongoDb.Collection("hotels")
+	AmenitiesCollection = mongoDb.Collection("amenities")
 
 }
