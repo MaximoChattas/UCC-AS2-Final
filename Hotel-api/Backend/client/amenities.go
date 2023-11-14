@@ -19,7 +19,6 @@ type amenityClientInterface interface {
 	GetAmenityByName(name string) model.Amenity
 	GetAmenities() model.Amenities
 	DeleteAmenityById(id string) error
-	//UpdateHotel(hotel model.Hotel) model.Hotel
 }
 
 var AmenityClient amenityClientInterface
