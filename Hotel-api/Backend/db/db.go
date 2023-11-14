@@ -12,6 +12,9 @@ import (
 var MongoDb *mongo.Database
 var client *mongo.Client
 
+var HotelsCollection *mongo.Collection
+var AmenitiesCollection *mongo.Collection
+
 func Disconect_db() {
 
 	client.Disconnect(context.TODO())
@@ -40,5 +43,8 @@ func Init_db() {
 
 	fmt.Println("Available datatabases:")
 	fmt.Println(dbNames)
+
+	HotelsCollection = MongoDb.Collection("hotels")
+	AmenitiesCollection = MongoDb.Collection("amenities")
 
 }

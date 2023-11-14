@@ -30,12 +30,10 @@ func init() {
 
 func (c amenityClient) InsertAmenity(amenity model.Amenity) model.Amenity {
 
-	db := db.MongoDb
-
 	insertAmenity := amenity
 	insertAmenity.Id = primitive.NewObjectID()
 
-	_, err := db.Collection("amenities").InsertOne(context.TODO(), &insertAmenity)
+	_, err := db.AmenitiesCollection.InsertOne(context.TODO(), &insertAmenity)
 
 	if err != nil {
 		fmt.Println(err)
@@ -50,7 +48,6 @@ func (c amenityClient) InsertAmenity(amenity model.Amenity) model.Amenity {
 func (c amenityClient) GetAmenityById(id string) model.Amenity {
 	var amenity model.Amenity
 
-	db := db.MongoDb
 	objID, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
@@ -58,7 +55,7 @@ func (c amenityClient) GetAmenityById(id string) model.Amenity {
 		return amenity
 	}
 
-	err = db.Collection("amenities").FindOne(context.TODO(), bson.D{{"_id", objID}}).Decode(&amenity)
+	err = db.AmenitiesCollection.FindOne(context.TODO(), bson.D{{"_id", objID}}).Decode(&amenity)
 	if err != nil {
 		fmt.Println(err)
 		return amenity
@@ -69,9 +66,7 @@ func (c amenityClient) GetAmenityById(id string) model.Amenity {
 func (c amenityClient) GetAmenityByName(name string) model.Amenity {
 	var amenity model.Amenity
 
-	db := db.MongoDb
-
-	err := db.Collection("amenities").FindOne(context.TODO(), bson.D{{"name", name}}).Decode(&amenity)
+	err := db.AmenitiesCollection.FindOne(context.TODO(), bson.D{{"name", name}}).Decode(&amenity)
 
 	if err != nil {
 		fmt.Println(err)
@@ -83,9 +78,7 @@ func (c amenityClient) GetAmenityByName(name string) model.Amenity {
 func (c amenityClient) GetAmenities() model.Amenities {
 	var amenities model.Amenities
 
-	db := db.MongoDb
-
-	cursor, err := db.Collection("amenities").Find(context.TODO(), bson.D{})
+	cursor, err := db.AmenitiesCollection.Find(context.TODO(), bson.D{})
 
 	if err != nil {
 		fmt.Println(err)
@@ -104,11 +97,9 @@ func (c amenityClient) GetAmenities() model.Amenities {
 
 func (c amenityClient) DeleteAmenityById(id string) error {
 
-	db := db.MongoDb
-
 	objID, err := primitive.ObjectIDFromHex(id)
 
-	result, err := db.Collection("amenities").DeleteOne(context.TODO(), bson.D{{"_id", objID}})
+	result, err := db.AmenitiesCollection.DeleteOne(context.TODO(), bson.D{{"_id", objID}})
 
 	if result.DeletedCount == 0 {
 		log.Debug("Amenity not found")

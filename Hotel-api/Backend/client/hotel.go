@@ -29,12 +29,10 @@ func init() {
 
 func (c hotelClient) InsertHotel(hotel model.Hotel) model.Hotel {
 
-	db := db.MongoDb
-
 	insertHotel := hotel
 	insertHotel.Id = primitive.NewObjectID()
 
-	_, err := db.Collection("hotels").InsertOne(context.TODO(), &insertHotel)
+	_, err := db.HotelsCollection.InsertOne(context.TODO(), &insertHotel)
 
 	if err != nil {
 		fmt.Println(err)
@@ -49,7 +47,6 @@ func (c hotelClient) InsertHotel(hotel model.Hotel) model.Hotel {
 func (c hotelClient) GetHotelById(id string) model.Hotel {
 	var hotel model.Hotel
 
-	db := db.MongoDb
 	objID, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
@@ -57,7 +54,7 @@ func (c hotelClient) GetHotelById(id string) model.Hotel {
 		return hotel
 	}
 
-	err = db.Collection("hotels").FindOne(context.TODO(), bson.D{{"_id", objID}}).Decode(&hotel)
+	err = db.HotelsCollection.FindOne(context.TODO(), bson.D{{"_id", objID}}).Decode(&hotel)
 	if err != nil {
 		fmt.Println(err)
 		return hotel
@@ -68,9 +65,7 @@ func (c hotelClient) GetHotelById(id string) model.Hotel {
 func (c hotelClient) GetHotels() model.Hotels {
 	var hotels model.Hotels
 
-	db := db.MongoDb
-
-	cursor, err := db.Collection("hotels").Find(context.TODO(), bson.D{})
+	cursor, err := db.HotelsCollection.Find(context.TODO(), bson.D{})
 
 	if err != nil {
 		fmt.Println(err)
@@ -89,11 +84,9 @@ func (c hotelClient) GetHotels() model.Hotels {
 
 func (c hotelClient) DeleteHotelById(id string) error {
 
-	db := db.MongoDb
-
 	objID, _ := primitive.ObjectIDFromHex(id)
 
-	result, err := db.Collection("hotels").DeleteOne(context.TODO(), bson.D{{"_id", objID}})
+	result, err := db.HotelsCollection.DeleteOne(context.TODO(), bson.D{{"_id", objID}})
 
 	if result.DeletedCount == 0 {
 		log.Debug("Hotel not found")
@@ -110,8 +103,6 @@ func (c hotelClient) DeleteHotelById(id string) error {
 
 func (c hotelClient) UpdateHotelById(hotel model.Hotel) model.Hotel {
 
-	db := db.MongoDb
-
 	update := bson.D{{"$set",
 		bson.D{
 			{"name", hotel.Name},
@@ -126,7 +117,7 @@ func (c hotelClient) UpdateHotelById(hotel model.Hotel) model.Hotel {
 		},
 	}}
 
-	result, err := db.Collection("hotels").UpdateOne(context.TODO(), bson.D{{"_id", hotel.Id}}, update)
+	result, err := db.HotelsCollection.UpdateOne(context.TODO(), bson.D{{"_id", hotel.Id}}, update)
 
 	if result.MatchedCount != 0 {
 		log.Debug("Updated hotel successfully")
