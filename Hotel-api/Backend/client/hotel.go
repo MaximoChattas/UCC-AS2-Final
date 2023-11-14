@@ -88,17 +88,19 @@ func (c hotelClient) DeleteHotelById(id string) error {
 
 	result, err := db.HotelsCollection.DeleteOne(context.TODO(), bson.D{{"_id", objID}})
 
-	if result.DeletedCount == 0 {
+	if err != nil {
+
+		log.Debug("Failed to delete hotel")
+		return err
+
+	} else if result.DeletedCount == 0 {
+
 		log.Debug("Hotel not found")
 		return errors.New("hotel not found")
-
-	} else if err != nil {
-		log.Debug("Failed to delete hotel")
-
-	} else {
-		log.Debug("Hotel deleted successfully: ", id)
 	}
-	return err
+
+	log.Debug("Hotel deleted successfully: ", id)
+	return nil
 }
 
 func (c hotelClient) UpdateHotelById(hotel model.Hotel) model.Hotel {
