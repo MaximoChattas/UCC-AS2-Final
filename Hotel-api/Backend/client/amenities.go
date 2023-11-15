@@ -100,15 +100,17 @@ func (c amenityClient) DeleteAmenityById(id string) error {
 
 	result, err := db.AmenitiesCollection.DeleteOne(context.TODO(), bson.D{{"_id", objID}})
 
-	if result.DeletedCount == 0 {
+	if err != nil {
+
+		log.Debug("Failed to delete amenity")
+		return err
+
+	} else if result.DeletedCount == 0 {
+
 		log.Debug("Amenity not found")
 		return errors.New("amenity not found")
-
-	} else if err != nil {
-		log.Debug("Failed to delete amenity")
-
-	} else {
-		log.Debug("Amenity deleted successfully: ", id)
 	}
-	return err
+
+	log.Debug("Amenity deleted successfully: ", id)
+	return nil
 }
