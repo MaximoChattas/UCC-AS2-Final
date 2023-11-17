@@ -25,7 +25,6 @@ type reservationServiceInterface interface {
 	GetReservations() (dto.ReservationsDto, error)
 	GetReservationsByUser(userId int) (dto.UserReservationsDto, error)
 	DeleteReservation(id int) error
-	getHotelInfo(hotelId string) (dto.HotelDto, error)
 	CheckAvailability(hotelId string, startDate time.Time, endDate time.Time) bool
 	CheckAllAvailability(city string, startDate string, endDate string) (dto.HotelsDto, error)
 }
@@ -39,7 +38,7 @@ func init() {
 func (s *reservationService) InsertReservation(reservationDto dto.ReservationDto) (dto.ReservationDto, error) {
 
 	userDto := client.GetUserById(reservationDto.UserId)
-	hotelDto, err := s.getHotelInfo(reservationDto.HotelId)
+	hotelDto, err := getHotelInfo(reservationDto.HotelId)
 
 	if err != nil {
 		return dto.ReservationDto{}, errors.New("error retrieving hotel information")
@@ -195,7 +194,7 @@ func (s *reservationService) DeleteReservation(id int) error {
 
 }
 
-func (s *reservationService) getHotelInfo(hotelId string) (dto.HotelDto, error) {
+func getHotelInfo(hotelId string) (dto.HotelDto, error) {
 	resp, err := http.Get("http://hotel:8080/hotel/" + hotelId)
 
 	if err != nil {
@@ -224,7 +223,7 @@ func (s *reservationService) getHotelInfo(hotelId string) (dto.HotelDto, error) 
 	return hotelDto, nil
 }
 
-func (s *reservationService) getAllHotelsByCity(city string) dto.HotelsDto {
+func getAllHotelsByCity(city string) dto.HotelsDto {
 
 	cityFormatted := strings.ReplaceAll(city, " ", "+")
 	resp, err := http.Get("http://search:8085/hotel?city=" + cityFormatted)
@@ -257,7 +256,7 @@ func (s *reservationService) getAllHotelsByCity(city string) dto.HotelsDto {
 
 func (s *reservationService) CheckAvailability(hotelId string, startDate time.Time, endDate time.Time) bool {
 
-	hotel, _ := s.getHotelInfo(hotelId)
+	hotel, _ := getHotelInfo(hotelId)
 	reservations := client.GetReservationsByHotel(hotelId)
 
 	roomsAvailable := hotel.RoomAmount
@@ -311,7 +310,7 @@ func (s *reservationService) CheckAllAvailability(city string, startDate string,
 
 	}
 
-	hotels := s.getAllHotelsByCity(city)
+	hotels := getAllHotelsByCity(city)
 
 	resultsCh := make(chan dto.HotelDto)
 
