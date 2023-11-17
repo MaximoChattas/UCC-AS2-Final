@@ -93,7 +93,7 @@ func CheckAvailability(c *gin.Context) {
 	hotelsAvailable, err := service.ReservationService.CheckAllAvailability(city, startDate, endDate)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
