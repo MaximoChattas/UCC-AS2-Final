@@ -39,7 +39,7 @@ func (s *userService) InsertUser(userDto dto.UserDto) (dto.UserDto, error) {
 	user.Password = string(encryptedPassword)
 	user.Role = "Customer"
 
-	user = client.InsertUser(user)
+	user = client.UserClient.InsertUser(user)
 
 	userDto.Id = user.Id
 	userDto.Role = user.Role
@@ -54,7 +54,7 @@ func (s *userService) InsertUser(userDto dto.UserDto) (dto.UserDto, error) {
 
 func (s *userService) GetUserById(id int) (dto.UserDto, error) {
 
-	var user model.User = client.GetUserById(id)
+	var user model.User = client.UserClient.GetUserById(id)
 
 	var userDto dto.UserDto
 
@@ -73,7 +73,7 @@ func (s *userService) GetUserById(id int) (dto.UserDto, error) {
 }
 
 func (s *userService) GetUsers() (dto.UsersDto, error) {
-	var users model.Users = client.GetUsers()
+	var users model.Users = client.UserClient.GetUsers()
 	var usersDto dto.UsersDto
 
 	for _, user := range users {
@@ -93,7 +93,7 @@ func (s *userService) GetUsers() (dto.UsersDto, error) {
 
 func (s *userService) UserLogin(loginDto dto.UserDto) (dto.UserDto, error) {
 
-	var user = client.GetUserByEmail(loginDto.Email)
+	var user = client.UserClient.GetUserByEmail(loginDto.Email)
 
 	if user.Id == 0 {
 		return loginDto, errors.New("user not registered")

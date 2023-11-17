@@ -7,9 +7,24 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+type userClient struct{}
+
+type userClientInterface interface {
+	InsertUser(user model.User) model.User
+	GetUserById(id int) model.User
+	GetUserByEmail(email string) model.User
+	GetUsers() model.Users
+}
+
+var UserClient userClientInterface
+
 var Db *gorm.DB
 
-func InsertUser(user model.User) model.User {
+func init() {
+	UserClient = &userClient{}
+}
+
+func (c *userClient) InsertUser(user model.User) model.User {
 
 	result := Db.Create(&user)
 
@@ -22,7 +37,7 @@ func InsertUser(user model.User) model.User {
 	return user
 }
 
-func GetUserById(id int) model.User {
+func (c *userClient) GetUserById(id int) model.User {
 	var user model.User
 
 	Db.Where("id = ?", id).First(&user)
@@ -31,7 +46,7 @@ func GetUserById(id int) model.User {
 	return user
 }
 
-func GetUserByEmail(email string) model.User {
+func (c *userClient) GetUserByEmail(email string) model.User {
 	var user model.User
 
 	Db.Where("email = ?", email).First(&user)
@@ -40,7 +55,7 @@ func GetUserByEmail(email string) model.User {
 	return user
 }
 
-func GetUsers() model.Users {
+func (c *userClient) GetUsers() model.Users {
 	var users model.Users
 	Db.Find(&users)
 
