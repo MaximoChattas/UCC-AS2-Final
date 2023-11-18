@@ -17,7 +17,9 @@ import (
 	"time"
 )
 
-type reservationService struct{}
+type reservationService struct {
+	HTTPClient httpClientInterface
+}
 
 type reservationServiceInterface interface {
 	InsertReservation(reservationDto dto.ReservationDto) (dto.ReservationDto, error)
@@ -27,18 +29,32 @@ type reservationServiceInterface interface {
 	DeleteReservation(id int) error
 	CheckAvailability(hotelId string, startDate time.Time, endDate time.Time) bool
 	CheckAllAvailability(city string, startDate string, endDate string) (dto.HotelsDto, error)
+	GetAllHotelsByCity(city string) dto.HotelsDto
+	GetHotelInfo(hotelId string) (dto.HotelDto, error)
+}
+
+type httpClient struct{}
+
+type httpClientInterface interface {
+	Get(url string) (*http.Response, error)
 }
 
 var ReservationService reservationServiceInterface
 
 func init() {
-	ReservationService = &reservationService{}
+	ReservationService = &reservationService{
+		HTTPClient: &httpClient{},
+	}
+}
+
+func (h *httpClient) Get(url string) (*http.Response, error) {
+	return http.Get(url)
 }
 
 func (s *reservationService) InsertReservation(reservationDto dto.ReservationDto) (dto.ReservationDto, error) {
 
 	userDto := client.UserClient.GetUserById(reservationDto.UserId)
-	hotelDto, err := getHotelInfo(reservationDto.HotelId)
+	hotelDto, err := s.GetHotelInfo(reservationDto.HotelId)
 
 	if err != nil {
 		return dto.ReservationDto{}, errors.New("error retrieving hotel information")
@@ -194,7 +210,7 @@ func (s *reservationService) DeleteReservation(id int) error {
 
 }
 
-func getHotelInfo(hotelId string) (dto.HotelDto, error) {
+func (s *reservationService) GetHotelInfo(hotelId string) (dto.HotelDto, error) {
 	resp, err := http.Get("http://hotel:8080/hotel/" + hotelId)
 
 	if err != nil {
@@ -223,10 +239,10 @@ func getHotelInfo(hotelId string) (dto.HotelDto, error) {
 	return hotelDto, nil
 }
 
-func getAllHotelsByCity(city string) dto.HotelsDto {
+func (s *reservationService) GetAllHotelsByCity(city string) dto.HotelsDto {
 
 	cityFormatted := strings.ReplaceAll(city, " ", "+")
-	resp, err := http.Get("http://search:8085/hotel?city=" + cityFormatted)
+	resp, err := s.HTTPClient.Get("http://search:8085/hotel?city=" + cityFormatted)
 
 	if err != nil {
 		log.Error("Error in HTTP request ", err)
@@ -256,7 +272,7 @@ func getAllHotelsByCity(city string) dto.HotelsDto {
 
 func (s *reservationService) CheckAvailability(hotelId string, startDate time.Time, endDate time.Time) bool {
 
-	hotel, _ := getHotelInfo(hotelId)
+	hotel, _ := s.GetHotelInfo(hotelId)
 	reservations := client.GetReservationsByHotel(hotelId)
 
 	roomsAvailable := hotel.RoomAmount
@@ -310,7 +326,7 @@ func (s *reservationService) CheckAllAvailability(city string, startDate string,
 
 	}
 
-	hotels := getAllHotelsByCity(city)
+	hotels := s.GetAllHotelsByCity(city)
 
 	resultsCh := make(chan dto.HotelDto)
 

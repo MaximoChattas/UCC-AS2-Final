@@ -75,6 +75,16 @@ func (t reservationTest) CheckAllAvailability(city string, _ string, _ string) (
 	return dto.HotelsDto{}, nil
 }
 
+func (t reservationTest) GetAllHotelsByCity(city string) dto.HotelsDto {
+
+	return dto.HotelsDto{}
+}
+
+func (t reservationTest) GetHotelInfo(hotelId string) (dto.HotelDto, error) {
+
+	return dto.HotelDto{}, nil
+}
+
 func TestInsertReservation(t *testing.T) {
 
 	a := assert.New(t)
@@ -84,7 +94,7 @@ func TestInsertReservation(t *testing.T) {
 
 	body := `{
 		"id": 1
-    }`
+   }`
 
 	req, err := http.NewRequest(http.MethodPost, "/reserve", strings.NewReader(body))
 
@@ -123,7 +133,7 @@ func TestInsertReservation_Error(t *testing.T) {
 
 	body := `{
 		"id": 0
-    }`
+   }`
 
 	req, err := http.NewRequest(http.MethodPost, "/reserve", strings.NewReader(body))
 
