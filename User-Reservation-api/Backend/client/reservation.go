@@ -5,7 +5,24 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func InsertReservation(reservation model.Reservation) model.Reservation {
+type reservationClient struct{}
+
+type reservationClientInterface interface {
+	InsertReservation(reservation model.Reservation) model.Reservation
+	GetReservationById(id int) model.Reservation
+	GetReservations() model.Reservations
+	GetReservationsByUser(userId int) model.Reservations
+	GetReservationsByHotel(hotelId string) model.Reservations
+	DeleteReservation(reservation model.Reservation) error
+}
+
+var ReservationClient reservationClientInterface
+
+func init() {
+	ReservationClient = &reservationClient{}
+}
+
+func (c *reservationClient) InsertReservation(reservation model.Reservation) model.Reservation {
 
 	result := Db.Create(&reservation)
 
@@ -18,7 +35,7 @@ func InsertReservation(reservation model.Reservation) model.Reservation {
 	return reservation
 }
 
-func GetReservationById(id int) model.Reservation {
+func (c *reservationClient) GetReservationById(id int) model.Reservation {
 	var reservation model.Reservation
 
 	Db.Where("id = ?", id).First(&reservation)
@@ -27,7 +44,7 @@ func GetReservationById(id int) model.Reservation {
 	return reservation
 }
 
-func GetReservations() model.Reservations {
+func (c *reservationClient) GetReservations() model.Reservations {
 	var reservations model.Reservations
 	Db.Find(&reservations)
 
@@ -36,7 +53,7 @@ func GetReservations() model.Reservations {
 	return reservations
 }
 
-func GetReservationsByUser(userId int) model.Reservations {
+func (c *reservationClient) GetReservationsByUser(userId int) model.Reservations {
 	var reservations model.Reservations
 
 	Db.Where("user_id = ?", userId).Find(&reservations)
@@ -45,7 +62,7 @@ func GetReservationsByUser(userId int) model.Reservations {
 	return reservations
 }
 
-func GetReservationsByHotel(hotelId string) model.Reservations {
+func (c *reservationClient) GetReservationsByHotel(hotelId string) model.Reservations {
 	var reservations model.Reservations
 
 	Db.Where("hotel_id = ?", hotelId).Find(&reservations)
@@ -54,7 +71,7 @@ func GetReservationsByHotel(hotelId string) model.Reservations {
 	return reservations
 }
 
-func DeleteReservation(reservation model.Reservation) error {
+func (c *reservationClient) DeleteReservation(reservation model.Reservation) error {
 	err := Db.Delete(&reservation).Error
 
 	if err != nil {
