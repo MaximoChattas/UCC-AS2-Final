@@ -75,12 +75,12 @@ func (s *reservationService) InsertReservation(reservationDto dto.ReservationDto
 		return reservationDto, errors.New("a reservation can't end before it starts")
 	}
 
-	amadeusDto, err := AmadeusService.GetAmadeusIdByHotelId(hotelDto.Id)
-	if err != nil {
-		return reservationDto, err
+	amadeusMap := client.AmadeusClient.GetAmadeusIdByHotelId(reservationDto.HotelId)
+	if amadeusMap.HotelId == "" {
+		return reservationDto, errors.New("no amadeus id set")
 	}
 
-	available, err := AmadeusService.GetAmadeusAvailability(amadeusDto.AmadeusId, timeStart, timeEnd)
+	available, err := AmadeusService.GetAmadeusAvailability(amadeusMap.AmadeusId, timeStart, timeEnd)
 	if err != nil {
 		return reservationDto, err
 	}

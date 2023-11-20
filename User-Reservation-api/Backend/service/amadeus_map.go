@@ -52,7 +52,7 @@ func (s *amadeusService) GetAmadeusIdByHotelId(hotelId string) (dto.AmadeusMapDt
 	var amadeusMapDto dto.AmadeusMapDto
 
 	if mapping.HotelId == "" {
-		return amadeusMapDto, errors.New("you need to set amadeus id for this hotel")
+		return amadeusMapDto, errors.New("no amadeus id set")
 	}
 
 	amadeusMapDto.HotelId = mapping.HotelId
