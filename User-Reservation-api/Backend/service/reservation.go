@@ -1,24 +1,24 @@
 package service
 
 import (
-	"User-Reservation/cache"
 	"User-Reservation/client"
 	"User-Reservation/dto"
 	"User-Reservation/model"
+	"User-Reservation/utils"
 	"encoding/json"
 	"errors"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"io"
 	"math"
-	"net/http"
 	"strings"
 	"sync"
 	"time"
 )
 
 type reservationService struct {
-	HTTPClient httpClientInterface
+	HTTPClient utils.HttpClientInterface
+	Cache      utils.CacheInterface
 }
 
 type reservationServiceInterface interface {
@@ -33,22 +33,13 @@ type reservationServiceInterface interface {
 	GetHotelInfo(hotelId string) (dto.HotelDto, error)
 }
 
-type httpClient struct{}
-
-type httpClientInterface interface {
-	Get(url string) (*http.Response, error)
-}
-
 var ReservationService reservationServiceInterface
 
 func init() {
 	ReservationService = &reservationService{
-		HTTPClient: &httpClient{},
+		HTTPClient: &utils.HttpClient{},
+		Cache:      &utils.Cache{},
 	}
-}
-
-func (h *httpClient) Get(url string) (*http.Response, error) {
-	return http.Get(url)
 }
 
 func (s *reservationService) InsertReservation(reservationDto dto.ReservationDto) (dto.ReservationDto, error) {
@@ -312,7 +303,7 @@ func (s *reservationService) CheckAllAvailability(city string, startDate string,
 	cityFormatted := city[0:3]
 	cacheKey := fmt.Sprintf("%s/%s/%s", cityFormatted, reservationStart.Format("02-01-06"), reservationEnd.Format("02-01-06"))
 
-	result, err := cache.Get(cacheKey)
+	result, err := s.Cache.Get(cacheKey)
 
 	if err == nil {
 
@@ -366,7 +357,7 @@ func (s *reservationService) CheckAllAvailability(city string, startDate string,
 	}
 
 	jsonResult, _ := json.Marshal(hotelsAvailable)
-	cache.Set(cacheKey, jsonResult)
+	s.Cache.Set(cacheKey, jsonResult)
 
 	return hotelsAvailable, nil
 }

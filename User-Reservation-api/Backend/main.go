@@ -2,13 +2,13 @@ package main
 
 import (
 	"User-Reservation/app"
-	"User-Reservation/cache"
 	"User-Reservation/db"
+	"User-Reservation/utils"
 )
 
 func main() {
 
 	db.StartDbEngine()
-	cache.InitCache()
+	utils.InitCache()
 	app.StartRoute()
 }

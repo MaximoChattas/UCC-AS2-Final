@@ -1,4 +1,4 @@
-package cache
+package utils
 
 import (
 	"github.com/bradfitz/gomemcache/memcache"
@@ -7,11 +7,18 @@ import (
 
 var cache *memcache.Client
 
+type Cache struct{}
+
+type CacheInterface interface {
+	Set(key string, value []byte)
+	Get(key string) ([]byte, error)
+}
+
 func InitCache() {
 	cache = memcache.New("memcached:11211")
 }
 
-func Set(key string, value []byte) {
+func (c *Cache) Set(key string, value []byte) {
 	err := cache.Set(&memcache.Item{Key: key, Value: value, Expiration: 10})
 
 	if err != nil {
@@ -19,7 +26,7 @@ func Set(key string, value []byte) {
 	}
 }
 
-func Get(key string) ([]byte, error) {
+func (c *Cache) Get(key string) ([]byte, error) {
 
 	resp, err := cache.Get(key)
 
