@@ -211,7 +211,7 @@ func (s *reservationService) DeleteReservation(id int) error {
 }
 
 func (s *reservationService) GetHotelInfo(hotelId string) (dto.HotelDto, error) {
-	resp, err := http.Get("http://hotel:8080/hotel/" + hotelId)
+	resp, err := s.HTTPClient.Get("http://hotel:8080/hotel/" + hotelId)
 
 	if err != nil {
 		log.Error("Error in HTTP request ", err)
