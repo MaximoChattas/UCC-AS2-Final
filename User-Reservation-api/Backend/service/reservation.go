@@ -64,7 +64,7 @@ func (s *reservationService) InsertReservation(reservationDto dto.ReservationDto
 		return reservationDto, errors.New("user not found")
 	}
 
-	if hotelDto.Id == "000000000000000000000000" {
+	if hotelDto.Id == "" {
 		return reservationDto, errors.New("hotel not found")
 	}
 
