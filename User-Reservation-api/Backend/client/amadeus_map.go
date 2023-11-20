@@ -5,7 +5,20 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func InsertAmadeusMap(mapping model.AmadeusMap) model.AmadeusMap {
+type amadeusClient struct{}
+
+type amadeusClientInterface interface {
+	InsertAmadeusMap(mapping model.AmadeusMap) model.AmadeusMap
+	GetAmadeusIdByHotelId(hotelId string) model.AmadeusMap
+}
+
+var AmadeusClient amadeusClientInterface
+
+func init() {
+	AmadeusClient = &amadeusClient{}
+}
+
+func (c *amadeusClient) InsertAmadeusMap(mapping model.AmadeusMap) model.AmadeusMap {
 
 	result := Db.Create(&mapping)
 
@@ -18,7 +31,7 @@ func InsertAmadeusMap(mapping model.AmadeusMap) model.AmadeusMap {
 	return mapping
 }
 
-func GetAmadeusIdByHotelId(hotelId string) model.AmadeusMap {
+func (c *amadeusClient) GetAmadeusIdByHotelId(hotelId string) model.AmadeusMap {
 	var mapping model.AmadeusMap
 
 	Db.Where("hotel_id = ?", hotelId).First(&mapping)

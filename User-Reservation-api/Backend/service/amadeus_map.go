@@ -36,7 +36,7 @@ func (s *amadeusService) InsertAmadeusMap(amadeusMapDto dto.AmadeusMapDto) (dto.
 	mapping.HotelId = amadeusMapDto.HotelId
 	mapping.AmadeusId = amadeusMapDto.AmadeusId
 
-	mapping = client.InsertAmadeusMap(mapping)
+	mapping = client.AmadeusClient.InsertAmadeusMap(mapping)
 
 	if mapping.HotelId == "" {
 		return amadeusMapDto, errors.New("error creating mapping")
@@ -47,7 +47,7 @@ func (s *amadeusService) InsertAmadeusMap(amadeusMapDto dto.AmadeusMapDto) (dto.
 
 func (s *amadeusService) GetAmadeusIdByHotelId(hotelId string) (dto.AmadeusMapDto, error) {
 
-	var mapping model.AmadeusMap = client.GetAmadeusIdByHotelId(hotelId)
+	var mapping model.AmadeusMap = client.AmadeusClient.GetAmadeusIdByHotelId(hotelId)
 
 	var amadeusMapDto dto.AmadeusMapDto
 
