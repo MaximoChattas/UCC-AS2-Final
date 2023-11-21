@@ -5,7 +5,6 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
-	"log"
 	"testing"
 )
 
@@ -15,14 +14,14 @@ func TestInsertUser(t *testing.T) {
 
 	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	if err != nil {
-		log.Fatalf("error opening database: %v", err)
+		t.Fatalf("error opening database: %v", err)
 	}
 
 	defer db.Close()
 
 	gormDb, err := gorm.Open("mysql", db)
 	if err != nil {
-		log.Fatalf("error connecting to database: %v", err)
+		t.Fatalf("error connecting to database: %v", err)
 	}
 
 	Db = gormDb
@@ -56,14 +55,14 @@ func TestGetUserById(t *testing.T) {
 
 	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	if err != nil {
-		log.Fatalf("error opening database: %v", err)
+		t.Fatalf("error opening database: %v", err)
 	}
 
 	defer db.Close()
 
 	gormDb, err := gorm.Open("mysql", db)
 	if err != nil {
-		log.Fatalf("error connecting to database: %v", err)
+		t.Fatalf("error connecting to database: %v", err)
 	}
 
 	Db = gormDb
@@ -94,14 +93,14 @@ func TestGetUserByEmail(t *testing.T) {
 
 	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	if err != nil {
-		log.Fatalf("error opening database: %v", err)
+		t.Fatalf("error opening database: %v", err)
 	}
 
 	defer db.Close()
 
 	gormDb, err := gorm.Open("mysql", db)
 	if err != nil {
-		log.Fatalf("error connecting to database: %v", err)
+		t.Fatalf("error connecting to database: %v", err)
 	}
 
 	Db = gormDb
@@ -132,14 +131,14 @@ func TestGetUsers(t *testing.T) {
 
 	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	if err != nil {
-		log.Fatalf("error opening database: %v", err)
+		t.Fatalf("error opening database: %v", err)
 	}
 
 	defer db.Close()
 
 	gormDb, err := gorm.Open("mysql", db)
 	if err != nil {
-		log.Fatalf("error connecting to database: %v", err)
+		t.Fatalf("error connecting to database: %v", err)
 	}
 
 	Db = gormDb
