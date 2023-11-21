@@ -4,6 +4,7 @@ import (
 	"User-Reservation/client"
 	"User-Reservation/dto"
 	"User-Reservation/model"
+	"User-Reservation/utils"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -14,7 +15,9 @@ import (
 	"time"
 )
 
-type amadeusService struct{}
+type amadeusService struct {
+	HTTPClient utils.HttpClientInterface
+}
 
 type amadeusServiceInterface interface {
 	InsertAmadeusMap(amadeusMapDto dto.AmadeusMapDto) (dto.AmadeusMapDto, error)
@@ -26,7 +29,7 @@ var AmadeusService amadeusServiceInterface
 var amadeusToken string
 
 func init() {
-	AmadeusService = &amadeusService{}
+	AmadeusService = &amadeusService{HTTPClient: &utils.HttpClient{}}
 	go getAmadeusToken()
 }
 
@@ -131,8 +134,7 @@ func (s *amadeusService) GetAmadeusAvailability(amadeusId string, startDate time
 
 	req.Header.Set("Authorization", "Bearer "+amadeusToken)
 
-	httpClient := http.Client{}
-	resp, err := httpClient.Do(req)
+	resp, err := s.HTTPClient.Do(req)
 	if err != nil {
 		log.Error("Error making request:", err)
 		return false, err

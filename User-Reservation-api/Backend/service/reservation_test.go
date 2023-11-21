@@ -16,12 +16,11 @@ import (
 type testReservation struct{}
 type mockHTTPClient struct{}
 type mockCache struct{}
-type testAmadeusService struct{}
 
 func init() {
 	client.ReservationClient = &testReservation{}
 	ReservationService = &reservationService{HTTPClient: &mockHTTPClient{}, Cache: &mockCache{}}
-	AmadeusService = &testAmadeusService{}
+	AmadeusService = &amadeusService{HTTPClient: &mockHTTPClient{}}
 }
 
 func (m *mockHTTPClient) Get(url string) (*http.Response, error) {
@@ -63,41 +62,20 @@ func (m *mockHTTPClient) Get(url string) (*http.Response, error) {
 	}, nil
 }
 
+func (m *mockHTTPClient) Do(_ *http.Request) (*http.Response, error) {
+
+	body := `{"data":[{"available":true}]}`
+
+	return &http.Response{
+		StatusCode: http.StatusOK,
+		Body:       io.NopCloser(strings.NewReader(body)),
+	}, nil
+}
+
 func (c *mockCache) Set(key string, value []byte) {}
 
 func (c *mockCache) Get(key string) ([]byte, error) {
 	return nil, errors.New("cache miss")
-}
-
-func (t *testAmadeusService) InsertAmadeusMap(amadeusMapDto dto.AmadeusMapDto) (dto.AmadeusMapDto, error) {
-
-	if amadeusMapDto.HotelId == "" || amadeusMapDto.AmadeusId == "" {
-		return dto.AmadeusMapDto{}, errors.New("failed to insert amadeus map")
-	}
-
-	return amadeusMapDto, nil
-}
-
-func (t *testAmadeusService) GetAmadeusIdByHotelId(hotelId string) (dto.AmadeusMapDto, error) {
-
-	if hotelId == "0" {
-		return dto.AmadeusMapDto{}, errors.New("hotel not found")
-	}
-
-	return dto.AmadeusMapDto{HotelId: hotelId, AmadeusId: "SBMIASOF"}, nil
-}
-
-func (t *testAmadeusService) GetAmadeusAvailability(amadeusId string, _ time.Time, _ time.Time) (bool, error) {
-
-	if amadeusId == "0" {
-		return false, errors.New("amadeus id not found")
-	}
-
-	if amadeusId == "1" {
-		return false, nil
-	}
-
-	return true, nil
 }
 
 func (t *testReservation) InsertReservation(reservation model.Reservation) model.Reservation {
