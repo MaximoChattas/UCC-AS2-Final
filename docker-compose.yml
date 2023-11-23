@@ -64,13 +64,26 @@ services:
 
   hotel:
     build: ./Hotel-api/Backend
+    deploy:
+      replicas: 5
+    volumes:
+      - hotel_images:/API/Images
     depends_on:
       rabbitmq:
         condition: service_healthy
       mongodatabase:
         condition: service_started
     ports:
+      - "8000"
+
+  hotelnginx:
+    image: nginx:latest
+    volumes:
+      - ./Hotel-api/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
       - "8080:8080"
+    depends_on:
+      - hotel
 
   solr:
     image: solr:8
@@ -84,7 +97,7 @@ services:
   search:
     build: ./Search-api
     depends_on:
-      hotel:
+      hotelnginx:
         condition: service_started
       rabbitmq:
         condition: service_healthy
@@ -97,3 +110,6 @@ services:
     build: ./Frontend/miranda-hotels
     ports:
       - "5173:5173"
+
+volumes:
+  hotel_images:

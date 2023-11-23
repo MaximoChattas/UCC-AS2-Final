@@ -1,8 +1,11 @@
 FROM golang:1.18
 
+WORKDIR /API
+RUN mkdir /API/Images
+COPY ./Images /API/Images
+
 ADD ./ /API
 
-WORKDIR /API
 RUN go mod init Hotel
 RUN go mod tidy
 RUN go build -o Hotel .
