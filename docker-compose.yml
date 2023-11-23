@@ -95,7 +95,7 @@ services:
       - "precreate-core hotels; exec solr -f"
 
   search:
-    build: ./Search-api
+    build: ./Search-api/Backend
     depends_on:
       hotelnginx:
         condition: service_started
