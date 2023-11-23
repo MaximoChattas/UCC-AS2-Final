@@ -46,7 +46,7 @@ func (m *mockHTTPClient) Get(url string) (*http.Response, error) {
 		}, nil
 	}
 
-	if strings.Contains(url, "http://search:8085/hotel?city=") {
+	if strings.Contains(url, "http://searchnginx:8085/hotel?city=") {
 
 		body := `[{"id":"1"}, {"id":"2"}, {"id":"3"}, {"id":"4"}, {"id":"5"}]`
 

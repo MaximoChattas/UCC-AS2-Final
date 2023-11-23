@@ -233,7 +233,7 @@ func (s *reservationService) GetHotelInfo(hotelId string) (dto.HotelDto, error) 
 func (s *reservationService) GetAllHotelsByCity(city string) dto.HotelsDto {
 
 	cityFormatted := strings.ReplaceAll(city, " ", "+")
-	resp, err := s.HTTPClient.Get("http://search:8085/hotel?city=" + cityFormatted)
+	resp, err := s.HTTPClient.Get("http://searchnginx:8085/hotel?city=" + cityFormatted)
 
 	if err != nil {
 		log.Error("Error in HTTP request ", err)
