@@ -79,7 +79,7 @@ func Consume() {
 func handleQueueMessage(messageDto dto.QueueMessageDto) {
 
 	if messageDto.Message == "create" || messageDto.Message == "update" {
-		resp, err := http.Get("http://hotel:8080/hotel/" + messageDto.Id)
+		resp, err := http.Get("http://hotelnginx:8080/hotel/" + messageDto.Id)
 
 		if err != nil {
 			log.Error("Error in HTTP request ", err)

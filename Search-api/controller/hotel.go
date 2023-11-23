@@ -47,7 +47,7 @@ func GetHotels(c *gin.Context) {
 
 func InsertData() {
 
-	resp, err := http.Get("http://hotel:8080/hotel")
+	resp, err := http.Get("http://hotelnginx:8080/hotel")
 
 	if err != nil {
 		log.Error("Error in HTTP request: ", err)

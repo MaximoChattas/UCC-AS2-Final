@@ -25,21 +25,21 @@ func init() {
 
 func (m *mockHTTPClient) Get(url string) (*http.Response, error) {
 
-	if url == "http://hotel:8080/hotel" {
+	if url == "http://hotelnginx:8080/hotel" {
 		return &http.Response{
 				StatusCode: http.StatusNotFound,
 			},
 			nil
 	}
 
-	if strings.Contains(url, "http://hotel:8080/hotel/1") {
+	if strings.Contains(url, "http://hotelnginx:8080/hotel/1") {
 		return &http.Response{
 			StatusCode: http.StatusOK,
 			Body:       io.NopCloser(strings.NewReader(`{"id":"1"}`)),
 		}, nil
 	}
 
-	if strings.Contains(url, "http://hotel:8080/hotel/5") {
+	if strings.Contains(url, "http://hotelnginx:8080/hotel/5") {
 		return &http.Response{
 			StatusCode: http.StatusOK,
 			Body:       io.NopCloser(strings.NewReader(`{"id":"5", "room_amount":1}`)),
