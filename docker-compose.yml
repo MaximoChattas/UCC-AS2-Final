@@ -65,7 +65,7 @@ services:
   hotel:
     build: ./Hotel-api/Backend
     deploy:
-      replicas: 5
+      replicas: 3
     volumes:
       - hotel_images:/API/Images
     depends_on:
@@ -106,7 +106,7 @@ services:
   search:
     build: ./Search-api/Backend
     deploy:
-      replicas: 5
+      replicas: 3
     depends_on:
       hotelnginx:
         condition: service_started
