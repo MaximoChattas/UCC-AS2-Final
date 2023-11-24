@@ -2,8 +2,10 @@ package client
 
 import (
 	"User-Reservation/model"
+	"time"
 
 	"github.com/jinzhu/gorm"
+	"github.com/karlseguin/ccache/v3"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -19,9 +21,11 @@ type userClientInterface interface {
 var UserClient userClientInterface
 
 var Db *gorm.DB
+var cache *ccache.Cache[model.User]
 
 func init() {
 	UserClient = &userClient{}
+	cache = ccache.New(ccache.Configure[model.User]())
 }
 
 func (c *userClient) InsertUser(user model.User) model.User {
@@ -34,6 +38,8 @@ func (c *userClient) InsertUser(user model.User) model.User {
 	}
 
 	log.Debug("User created:", user.Id)
+
+	cache.Set(user.Email, user, 24*time.Hour)
 	return user
 }
 
@@ -47,10 +53,23 @@ func (c *userClient) GetUserById(id int) model.User {
 }
 
 func (c *userClient) GetUserByEmail(email string) model.User {
+
+	item := cache.Get(email)
+
+	if item != nil {
+		item.Extend(24 * time.Hour)
+		log.Info("Data retrieved from local cache")
+		return item.Value()
+	}
+
 	var user model.User
 
-	Db.Where("email = ?", email).First(&user)
+	result := Db.Where("email = ?", email).First(&user)
 	log.Debug("User: ", user)
+
+	if result.Error == nil {
+		cache.Set(email, user, 24*time.Hour)
+	}
 
 	return user
 }

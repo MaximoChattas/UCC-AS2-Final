@@ -110,7 +110,7 @@ func TestGetUserByEmail(t *testing.T) {
 		Name:     "User",
 		LastName: "User",
 		Dni:      "123456",
-		Email:    "email@email.com",
+		Email:    "email1@email.com",
 		Password: "pass",
 		Role:     "Customer",
 	}
