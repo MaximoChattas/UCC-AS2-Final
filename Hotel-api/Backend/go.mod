@@ -6,7 +6,6 @@ require (
 	github.com/NeowayLabs/wabbit v0.0.0-20210927194032-73ad61d1620e
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.9.1
-	github.com/karlseguin/ccache/v3 v3.0.5
 	github.com/rabbitmq/amqp091-go v1.9.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.8.3
