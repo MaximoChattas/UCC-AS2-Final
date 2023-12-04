@@ -173,6 +173,10 @@ func DeleteContainer(id string) error {
 	return nil
 }
 
+func GetScalableServices() []string {
+	return scalableServices
+}
+
 func getContainersIdsByService(service string) ([]string, error) {
 
 	command := exec.Command("docker-compose", "-f", "../docker-compose.yml", "ps", "-q", service)

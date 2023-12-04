@@ -68,3 +68,10 @@ func DeleteContainer(c *gin.Context) {
 	message := fmt.Sprintf("container %s deleted successfully", id)
 	c.JSON(http.StatusOK, gin.H{"message": message})
 }
+
+func GetScalableServices(c *gin.Context) {
+
+	services := client.GetScalableServices()
+	c.JSON(http.StatusOK, services)
+
+}
