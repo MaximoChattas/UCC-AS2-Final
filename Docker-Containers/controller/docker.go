@@ -53,3 +53,18 @@ func ScaleService(c *gin.Context) {
 	message := fmt.Sprintf("Service %s scaled correctly to %d instances", service, qty)
 	c.JSON(http.StatusOK, gin.H{"message": message})
 }
+
+func DeleteContainer(c *gin.Context) {
+
+	id := c.Param("id")
+
+	err := client.DeleteContainer(id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	message := fmt.Sprintf("container %s deleted successfully", id)
+	c.JSON(http.StatusOK, gin.H{"message": message})
+}

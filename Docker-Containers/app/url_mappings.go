@@ -11,6 +11,7 @@ func mapUrls() {
 	router.GET("/stats", controller.GetStats)
 	router.GET("/stats/:service", controller.GetStatsByService)
 	router.POST("/scale/:service", controller.ScaleService)
+	router.DELETE("/container/:id", controller.DeleteContainer)
 
 	log.Info("Finishing mappings configurations")
 }

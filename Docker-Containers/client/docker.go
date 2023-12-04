@@ -63,7 +63,7 @@ func GetStatsByService(service string) (dto.ContainersStatsDto, error) {
 
 	var containersStats dto.ContainersStatsDto
 
-	containers, err := getContainersIdByService(service)
+	containers, err := getContainersIdsByService(service)
 	if err != nil {
 		return dto.ContainersStatsDto{}, err
 	}
@@ -118,7 +118,7 @@ func ScaleService(service string) (int, error) {
 		return 0, errors.New("service not scalable")
 	}
 
-	ids, err := getContainersIdByService(service)
+	ids, err := getContainersIdsByService(service)
 	if err != nil {
 		return 0, err
 	}
@@ -142,7 +142,38 @@ func ScaleService(service string) (int, error) {
 
 }
 
-func getContainersIdByService(service string) ([]string, error) {
+func DeleteContainer(id string) error {
+
+	service, err := getContainerServiceById(id)
+	if err != nil {
+		return err
+	}
+
+	if !serviceScalable(service) {
+		return errors.New("you cant delete this service's containers")
+	}
+
+	containers, err := getContainersIdsByService(service)
+	if len(containers) == 1 {
+		return errors.New("there has to be at least one container running for each service")
+	}
+
+	deleteCommand := exec.Command("docker", "rm", "-f", id)
+	err = deleteCommand.Run()
+	if err != nil {
+		return err
+	}
+
+	restartCommand := exec.Command("docker-compose", "-f", "../docker-compose.yml", "restart", fmt.Sprintf("%s%s", service, "nginx"))
+	err = restartCommand.Run()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func getContainersIdsByService(service string) ([]string, error) {
 
 	command := exec.Command("docker-compose", "-f", "../docker-compose.yml", "ps", "-q", service)
 	output, err := command.Output()
@@ -156,6 +187,28 @@ func getContainersIdByService(service string) ([]string, error) {
 	idsArray := strings.Split(ids, "\n")
 
 	return idsArray, nil
+}
+
+func getContainerServiceById(id string) (string, error) {
+
+	command := exec.Command("docker", "inspect", "--format", `{ "service": "{{ index .Config.Labels "com.docker.compose.service" }}" }`, id)
+	output, err := command.Output()
+	if err != nil {
+		log.Error(err)
+		return "", errors.New("container not found")
+	}
+
+	var containerService struct {
+		Service string `json:"Service"`
+	}
+
+	err = json.Unmarshal(output, &containerService)
+	if err != nil {
+		log.Error(err)
+		return "", err
+	}
+
+	return containerService.Service, nil
 }
 
 func serviceExists(service string) bool {
