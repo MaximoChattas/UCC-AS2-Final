@@ -16,13 +16,13 @@ import HotelAvailable from "./components/HotelAvailable/HotelAvailable";
 import LoadAmenity from "./components/LoadAmenity/LoadAmenity.jsx";
 import UpdateHotel from "./components/UpdateHotel/UpdateHotel.jsx";
 import ContainerStats from "./components/ContainersStats/ContainerStats.jsx"
+import ScaleServices from "./components/ScaleServices/ScaleServices.jsx";
 
 
 // Create the UserProfileContext
 export const UserProfileContext = React.createContext();
 
 const App = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
 
   return (
@@ -44,6 +44,7 @@ const App = () => {
             <Route path="/loadamenity" element={<LoadAmenity />} />
             <Route path="/updatehotel/:id" element={<UpdateHotel />} />
             <Route path="/stats" element={<ContainerStats />} />
+            <Route path="/scale" element={<ScaleServices />} />
           </Routes>
         </UserProfileContext.Provider>
     </div>
