@@ -1,0 +1,24 @@
+.fullscreen{
+    margin-top: 50px;
+    text-align: center;
+    padding: 10px;
+    background-color: #333;
+    width: 100vw;
+    height: 100vh;
+}
+
+.container-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px; /* Adjust as needed */
+}
+
+.container-table th, .container-table td {
+    padding: 10px 30px;
+    text-align: center;
+    /*border: 1px solid #ddd;*/
+}
+
+.dropdown{
+    padding: 10px;
+}
