@@ -45,13 +45,6 @@ services:
     depends_on:
       - user-reservation
 
-  mongo-seed:
-    build: ./Hotel-api/mongodbdatabase
-    links:
-      - mongodatabase
-    depends_on:
-      - mongodatabase
-
   mongodatabase:
     image: mongo
     ports:
@@ -110,8 +103,6 @@ services:
     deploy:
       replicas: 3
     depends_on:
-      hotelnginx:
-        condition: service_started
       rabbitmq:
         condition: service_healthy
       solr:
