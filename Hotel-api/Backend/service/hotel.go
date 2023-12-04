@@ -35,6 +35,7 @@ func (s *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) 
 	hotel.StreetName = hotelDto.StreetName
 	hotel.StreetNumber = hotelDto.StreetNumber
 	hotel.Rate = hotelDto.Rate
+	hotel.Images = hotelDto.Images
 
 	for _, amenityName := range hotelDto.Amenities {
 		amenity := client.AmenityClient.GetAmenityByName(amenityName)
