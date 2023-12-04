@@ -1,4 +1,4 @@
-import React, { useState, createContext } from "react";
+import React, { useState } from "react";
 import { Routes, Route } from 'react-router-dom'
 import HotelList from "./components/HotelList/HotelList";
 import HotelDetails from "./components/HotelDetails/HotelDetails";
@@ -15,6 +15,7 @@ import "./App.css"
 import HotelAvailable from "./components/HotelAvailable/HotelAvailable";
 import LoadAmenity from "./components/LoadAmenity/LoadAmenity.jsx";
 import UpdateHotel from "./components/UpdateHotel/UpdateHotel.jsx";
+import ContainerStats from "./components/ContainersStats/ContainerStats.jsx"
 
 
 // Create the UserProfileContext
@@ -42,6 +43,7 @@ const App = () => {
             <Route path="/hotel/availability" element={<HotelAvailable />} />
             <Route path="/loadamenity" element={<LoadAmenity />} />
             <Route path="/updatehotel/:id" element={<UpdateHotel />} />
+            <Route path="/stats" element={<ContainerStats />} />
           </Routes>
         </UserProfileContext.Provider>
     </div>
