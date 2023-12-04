@@ -2,6 +2,7 @@ package controller
 
 import (
 	"Docker-Containers/client"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -36,5 +37,19 @@ func GetStatsByService(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, stats)
+}
 
+func ScaleService(c *gin.Context) {
+
+	service := c.Param("service")
+
+	qty, err := client.ScaleService(service)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	message := fmt.Sprintf("Service %s scaled correctly to %d instances", service, qty)
+	c.JSON(http.StatusOK, gin.H{"message": message})
 }

@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"errors"
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	"os/exec"
 	"strings"
@@ -105,6 +106,40 @@ func GetStatsByService(service string) (dto.ContainersStatsDto, error) {
 	}
 
 	return containersStats, nil
+}
+
+func ScaleService(service string) (int, error) {
+
+	if !serviceExists(service) {
+		return 0, errors.New("service does not exist")
+	}
+
+	if !serviceScalable(service) {
+		return 0, errors.New("service not scalable")
+	}
+
+	ids, err := getContainersIdByService(service)
+	if err != nil {
+		return 0, err
+	}
+
+	currQty := len(ids)
+
+	scaleCommand := exec.Command("docker-compose", "-f", "../docker-compose.yml", "up", "-d", "--scale", fmt.Sprintf("%s=%d", service, currQty+1))
+
+	err = scaleCommand.Run()
+	if err != nil {
+		return 0, err
+	}
+
+	restartCommand := exec.Command("docker-compose", "-f", "../docker-compose.yml", "restart", fmt.Sprintf("%s%s", service, "nginx"))
+	err = restartCommand.Run()
+	if err != nil {
+		return 0, err
+	}
+
+	return currQty + 1, err
+
 }
 
 func getContainersIdByService(service string) ([]string, error) {
