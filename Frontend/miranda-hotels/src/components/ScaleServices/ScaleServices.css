@@ -22,3 +22,7 @@
 .dropdown{
     padding: 10px;
 }
+
+.error-message{
+    color: red;
+}

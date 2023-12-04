@@ -8,6 +8,7 @@ const ScaleServices = () => {
     const [selectedOption, setSelectedOption] = useState('')
     const [containers, setContainers] = useState([]);
     const [error, setError] = useState(null);
+    const [apiError, setApiError] = useState(null)
     const [loading, setLoading] = useState(true)
 
     const { userProfile } = useContext(UserProfileContext);
@@ -59,6 +60,8 @@ const ScaleServices = () => {
 
     const fetchStatsData = async (option) => {
         try {
+            setError(null);
+            setApiError(null);
             const response = await fetch(`http://localhost:8004/stats/${option}`);
             const stats = await response.json();
             setContainers(stats);
@@ -69,11 +72,11 @@ const ScaleServices = () => {
     };
 
     const handleDropdownChange = async (event) => {
-       setLoading(true)
+       setLoading(true);
        const selectedValue = event.target.value;
        setSelectedOption(selectedValue);
        await fetchStatsData(selectedValue);
-       setLoading(false)
+       setLoading(false);
     };
 
     const handleDeleteContainer = async (containerId) => {
@@ -85,35 +88,38 @@ const ScaleServices = () => {
 
             if (response.ok) {
                 const message = await response.text();
-                alert(message)
-                await fetchStatsData(selectedOption)
+                alert(message);
+                await fetchStatsData(selectedOption);
             } else {
-                console.error('Failed to delete container:', response.statusText);
-                setError(error)
+                const data = await response.json();
+                const errorMessage = data.error || 'Error';
+                throw new Error(errorMessage);
             }
         } catch (error) {
-            console.error('Error deleting container:', error);
+            setApiError(error.message);
         }
     };
 
     const handleScaleService = async (option) => {
         try {
-
             const response = await fetch(`http://localhost:8004/scale/${option}`, {
                 method: 'POST',
             });
 
             if (response.ok) {
                 const message = await response.text();
-                alert(message)
-                await fetchStatsData(option)
+                alert(message);
+                await fetchStatsData(option);
             } else {
-                console.error('Failed to scale service:', response.statusText);
-                setError(error)
+                const data = await response.json();
+                const errorMessage = data.error || 'Error';
+                throw new Error(errorMessage);
+
             }
 
         } catch (error) {
             console.error('Error scaling service:', error);
+            setApiError(error.message);
         }
     }
 
@@ -183,6 +189,7 @@ const ScaleServices = () => {
 
                 <button onClick={() => handleScaleService(selectedOption)}>Escalar Servicio</button>
             </div>
+            {apiError && <p className="error-message">{apiError}</p>}
             <div className="fullscreen">
                 <table className="container-table">
                     <thead>
