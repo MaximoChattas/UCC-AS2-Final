@@ -2,6 +2,7 @@ import Navbar from "../NavBar/NavBar.jsx"
 import { UserProfileContext } from '../../App';
 import React, {useContext, useEffect, useState} from "react";
 import "./ScaleServices.css"
+import {el} from "react-date-range/dist/locale/index.js";
 
 const ScaleServices = () => {
     const [options, setOptions] = useState([]);
@@ -63,11 +64,20 @@ const ScaleServices = () => {
             setError(null);
             setApiError(null);
             const response = await fetch(`http://localhost:8004/stats/${option}`);
-            const stats = await response.json();
-            setContainers(stats);
+
+            if (response.ok) {
+                const stats = await response.json();
+                setContainers(stats);
+            } else {
+                const data = await response.json();
+                const errorMessage = data.message || 'Error';
+                throw new Error(errorMessage)
+            }
+
         } catch (error) {
             console.error('Error fetching stats data:', error);
             setError(error.message);
+            await fetchStatsData(selectedOption);
         }
     };
 
@@ -153,6 +163,13 @@ const ScaleServices = () => {
         return (
             <>
                 <Navbar />
+                <select id="dropdown" className="dropdown" value={selectedOption} onChange={handleDropdownChange}>
+                    {options.map((option, index) => (
+                        <option key={index} value={option}>
+                            {option}
+                        </option>
+                    ))}
+                </select>
                 <div className="fullscreen">Error: {error}</div>
             </>
         );
