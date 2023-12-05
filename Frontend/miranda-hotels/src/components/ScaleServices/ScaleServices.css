@@ -7,6 +7,11 @@
     height: 100vh;
 }
 
+.escalate-top-container {
+    position: relative;
+    display: inline-block;
+}
+
 .container-table {
     width: 100%;
     border-collapse: collapse;
@@ -20,9 +25,17 @@
 }
 
 .dropdown{
+    position: absolute;
+    top: 100%;
     padding: 10px;
 }
 
 .error-message{
     color: red;
+}
+
+.escalate-button{
+    margin: 20px;
+    border-radius: 100px;
+    color: rgb(0, 0, 0);
 }

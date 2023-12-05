@@ -137,7 +137,7 @@ const ScaleServices = () => {
             <>
                 <Navbar />
                 <h2>Contenedores</h2>
-                <select id="dropdown" value={selectedOption} onChange={handleDropdownChange}>
+                <select id="dropdown" className="dropdown" value={selectedOption} onChange={handleDropdownChange}>
                     {options.map((option, index) => (
                         <option key={index} value={option}>
                             {option}
@@ -162,7 +162,7 @@ const ScaleServices = () => {
         return (
             <>
                 <Navbar />
-                <select id="dropdown" value={selectedOption} onChange={handleDropdownChange}>
+                <select id="dropdown" className="dropdown" value={selectedOption} onChange={handleDropdownChange}>
                     {options.map((option, index) => (
                         <option key={index} value={option}>
                             {option}
@@ -178,7 +178,7 @@ const ScaleServices = () => {
         <>
             <Navbar />
             <h2>Contenedores</h2>
-            <div>
+            <div className="escalate-top-container">
                 <select id="dropdown" className="dropdown" value={selectedOption} onChange={handleDropdownChange}>
                     {options.map((option, index) => (
                         <option key={index} value={option}>
@@ -187,7 +187,7 @@ const ScaleServices = () => {
                     ))}
                 </select>
 
-                <button onClick={() => handleScaleService(selectedOption)}>Escalar Servicio</button>
+                <button className="escalate-button" onClick={() => handleScaleService(selectedOption)}>Escalar Servicio</button>
             </div>
             {apiError && <p className="error-message">{apiError}</p>}
             <div className="fullscreen">
@@ -210,7 +210,9 @@ const ScaleServices = () => {
                             <td>{container.CPUPerc}</td>
                             <td>{container.MemPerc}</td>
                             <td>{container.MemUsage}</td>
-                            <td><button onClick={() => {handleDeleteContainer(container.ID)}}>Eliminar</button></td>
+                            <td><button className="escalate-button" onClick={() => {handleDeleteContainer(container.ID)}}>
+                                Eliminar
+                            </button></td>
                         </tr>
                     ))}
                     </tbody>
