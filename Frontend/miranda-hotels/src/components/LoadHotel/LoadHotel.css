@@ -23,6 +23,10 @@
     margin: 10px;
 }
 
-  .error-message{
-    color: red;
-  }
+.error-message{
+color: red;
+}
+
+.contenedorImagenes{
+    margin: 30px;
+}
