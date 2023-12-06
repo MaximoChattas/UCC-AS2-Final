@@ -61,6 +61,13 @@ const ReservationDetails = () => {
   };
 
   const handleDeleteReservation = async () => {
+
+    const confirmation = window.confirm('¿Está seguro que desea cancelar su reserva?');
+
+    if (!confirmation) {
+      return;
+    }
+
     try {
       const response = await fetch(`http://localhost:8090/reservation/${id}`, {
         method: 'DELETE',
