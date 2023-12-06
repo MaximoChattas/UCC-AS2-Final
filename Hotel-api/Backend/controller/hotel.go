@@ -113,6 +113,8 @@ func InsertImages(c *gin.Context) {
 
 	imageCount := len(hotelDto.Images)
 
+	hotelDto.Images = []string{}
+
 	for i, file := range files {
 
 		fileExt := path.Ext(file.Filename)
