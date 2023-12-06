@@ -1,8 +1,9 @@
-.contenedorLoad{
+.contenedorLoad {
     text-align: center;
     background-color: #333;
     width: 100vw;
-    height: 100vh;
+    min-height: 120vh;
+    padding: 20px;
 }
 
 .contenedorLoad h5 {

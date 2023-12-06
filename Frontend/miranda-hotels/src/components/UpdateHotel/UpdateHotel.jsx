@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { UserProfileContext } from '../../App';
 import Navbar from '../NavBar/NavBar';
 import '../LoadHotel/LoadHotel.css';
-import {da} from "react-date-range/dist/locale/index.js";
 
 function UpdateHotel() {
     const { id } = useParams();
@@ -81,6 +80,7 @@ function UpdateHotel() {
             });
 
             if (response.status === 200) {
+                setIsLoaded(true);
                 await handleImagesUpload();
             } else {
                 const data = await response.json();
@@ -169,20 +169,21 @@ function UpdateHotel() {
                 <form onSubmit={handleUpdateHotel}>
                     <div>
                         <label>Nombre:</label>
-                        <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                        <input type="text" disabled={isLoaded} value={name} onChange={(e) => setName(e.target.value)} />
                     </div>
                     <div>
                         <label>Ciudad:</label>
-                        <input type="text" value={city} onChange={(e) => setCity(e.target.value)} />
+                        <input type="text" disabled={isLoaded} value={city} onChange={(e) => setCity(e.target.value)} />
                     </div>
                     <div>
                         <label>Calle:</label>
-                        <input type="text" value={street_name} onChange={(e) => setStreet_name(e.target.value)} />
+                        <input type="text" disabled={isLoaded} value={street_name} onChange={(e) => setStreet_name(e.target.value)} />
                     </div>
                     <div>
                         <label>Altura:</label>
                         <input
                             type="number"
+                            disabled={isLoaded}
                             pattern="[0-9]*"
                             value={street_number}
                             onChange={(e) => setStreet_number(e.target.value)}
@@ -192,6 +193,7 @@ function UpdateHotel() {
                         <label>Habitaciones:</label>
                         <input
                             type="number"
+                            disabled={isLoaded}
                             pattern="[0-9]*"
                             value={room_amount}
                             onChange={(e) => setRoom_amount(e.target.value)}
@@ -199,13 +201,19 @@ function UpdateHotel() {
                     </div>
                     <div>
                         <label>Tarifa: $</label>
-                        <input type="number" pattern="[0-9]*" value={rate} onChange={(e) => setRate(e.target.value)} />
+                        <input type="number"
+                               disabled={isLoaded}
+                               pattern="[0-9]*"
+                               value={rate}
+                               onChange={(e) => setRate(e.target.value)}
+                        />
                     </div>
                     <div>
                         <label>Descripción:</label>
                         <div>
               <textarea
                   value={description}
+                  disabled={isLoaded}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Ingrese la descripción"
                   maxLength={1000}
@@ -224,6 +232,7 @@ function UpdateHotel() {
                                 <div key={amenity.id}>
                                     <input
                                         type="checkbox"
+                                        disabled={isLoaded}
                                         value={amenity.name}
                                         name="amenities"
                                         onChange={(e) => handleAmenityChange(e, amenity.name)}
@@ -248,8 +257,8 @@ function UpdateHotel() {
                     </div>
 
                     {error && <p className="error-message">{error}</p>}
-                    <button type="submit">
-                        Actualizar Hotel
+                    <button disabled={isLoaded} type="submit">
+                        {isLoaded ? 'Actualizando...' : 'Actualizar Hotel'}
                     </button>
                 </form>
             </div>
