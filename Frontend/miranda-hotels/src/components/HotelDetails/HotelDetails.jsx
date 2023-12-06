@@ -12,6 +12,7 @@ const HotelDetails = () => {
   const [error, setError] = useState(null);
   const [index, setIndex] = useState(0);
   const [adminError, setAdminError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { userProfile } = useContext(UserProfileContext);
   const [selectedDates, setSelectedDates] = useState({
     startDate: new Date(),
@@ -43,12 +44,22 @@ const HotelDetails = () => {
   };
 
   const handleDeleteHotel = async () => {
+
+    const confirmation = window.confirm('¿Está seguro que desea eliminar el hotel?');
+
+    if (!confirmation) {
+      return;
+    }
+
     try {
       const response = await fetch(`http://localhost:8080/hotel/${id}`, {
         method: 'DELETE',
       });
       if (response.ok) {
-        navigate(`/`)
+        setIsLoading(true);
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error);
@@ -145,8 +156,10 @@ const HotelDetails = () => {
         )}
         {userProfile && userProfile.role === "Admin" && (
             <div>
-              <button className="admin-button" onClick={() => navigate(`/updatehotel/${id}`)}>Modificar Hotel</button>
-              <button className="admin-button" onClick={handleDeleteHotel}>Borrar Hotel</button>
+              <button className="admin-button" disabled={isLoading} onClick={() => navigate(`/updatehotel/${id}`)}>Modificar Hotel</button>
+              <button className="admin-button" disabled={isLoading} onClick={handleDeleteHotel}>
+                {isLoading ? 'Borrando...' : 'Borrar Hotel'}
+              </button>
 
               {adminError && <p className="error-message">{adminError}</p>}
             </div>
