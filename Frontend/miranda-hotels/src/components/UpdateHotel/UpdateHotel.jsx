@@ -16,6 +16,9 @@ function UpdateHotel() {
     const [description, setDescription] = useState('');
     const [amenities, setAmenities] = useState([]);
     const [selectedAmenities, setSelectedAmenities] = useState([]);
+    const [images, setImages] = useState([]);
+
+    const [isLoaded, setIsLoaded] = useState(false)
 
     const { userProfile } = useContext(UserProfileContext);
 
@@ -78,7 +81,7 @@ function UpdateHotel() {
             });
 
             if (response.status === 200) {
-                navigate('/')
+                await handleImagesUpload();
             } else {
                 const data = await response.json();
                 const errorMessage = data.error || 'Error';
@@ -95,6 +98,37 @@ function UpdateHotel() {
             setSelectedAmenities([...selectedAmenities, amenityName]);
         } else {
             setSelectedAmenities(selectedAmenities.filter((name) => name !== amenityName));
+        }
+    };
+
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+        setImages(files);
+    };
+
+    const handleImagesUpload = async () => {
+        try {
+            const formData = new FormData();
+            images.forEach((image) => {
+                formData.append('images', image);
+            });
+
+            const response = await fetch(`http://localhost:8080/hotel/${id}/images`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                setTimeout(() => {
+                    navigate('/');
+                }, 2000);
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.error);
+            }
+        } catch (error) {
+            console.error(error);
+            setError(error.message);
         }
     };
 
@@ -200,6 +234,19 @@ function UpdateHotel() {
                             ))}
                         </div>
                     }
+
+                    <div className="contenedorImagenes">
+                        <h4>Cargar Imagenes</h4>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={handleImageChange}
+                            disabled={isLoaded}
+                        />
+
+                    </div>
+
                     {error && <p className="error-message">{error}</p>}
                     <button type="submit">
                         Actualizar Hotel
