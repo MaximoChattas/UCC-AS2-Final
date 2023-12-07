@@ -68,8 +68,8 @@ func getAmadeusToken() {
 
 	var tokenResponse dto.AmadeusTokenResponse
 
-	amadeusKey := "50w5hQBPoihvKXUXvAV8LOxRto3rRxCD"
-	amadeusSecret := "e5BnlfA2bZYDiaSl"
+	amadeusKey := "63F9rNeO3vuydOq9wYeMNHOe7AGbtm3P"
+	amadeusSecret := "AwdPGkxeCr6VBavX"
 
 	url := "https://test.api.amadeus.com/v1/security/oauth2/token"
 	data := fmt.Sprintf("grant_type=client_credentials&client_id=%s&client_secret=%s", amadeusKey, amadeusSecret)
