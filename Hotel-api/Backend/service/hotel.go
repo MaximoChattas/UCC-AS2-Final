@@ -15,7 +15,7 @@ type hotelServiceInterface interface {
 	GetHotelById(id string) (dto.HotelDto, error)
 	GetHotels() (dto.HotelsDto, error)
 	InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, error)
-	DeleteHotel(id string) error
+	DeleteHotel(id string) (dto.HotelDto, error)
 	UpdateHotel(hotelDto dto.HotelDto) (dto.HotelDto, error)
 }
 
@@ -128,18 +128,18 @@ func (s *hotelService) GetHotelById(id string) (dto.HotelDto, error) {
 	return hotelDto, nil
 }
 
-func (s *hotelService) DeleteHotel(id string) error {
+func (s *hotelService) DeleteHotel(id string) (dto.HotelDto, error) {
 
 	hotel := client.HotelClient.GetHotelById(id)
 
 	if hotel.Id.Hex() == "000000000000000000000000" {
-		return errors.New("hotel not found")
+		return dto.HotelDto{}, errors.New("hotel not found")
 	}
 
 	err := client.HotelClient.DeleteHotelById(id)
 
 	if err != nil {
-		return err
+		return dto.HotelDto{}, err
 	}
 
 	body := map[string]interface{}{
@@ -152,10 +152,14 @@ func (s *hotelService) DeleteHotel(id string) error {
 	err = queue.QueueProducer.Publish(jsonBody)
 
 	if err != nil {
-		return err
+		return dto.HotelDto{}, err
 	}
 
-	return err
+	var hotelDto dto.HotelDto
+	hotelDto.Id = hotel.Id.Hex()
+	hotelDto.Images = hotel.Images
+
+	return hotelDto, err
 }
 
 func (s *hotelService) UpdateHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) {

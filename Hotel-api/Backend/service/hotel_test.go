@@ -207,7 +207,7 @@ func TestDeleteHotel_NotFound(t *testing.T) {
 	a := assert.New(t)
 
 	id := "000000000000000000000000"
-	err := HotelService.DeleteHotel(id)
+	_, err := HotelService.DeleteHotel(id)
 
 	a.NotNil(err)
 
@@ -220,7 +220,7 @@ func TestDeleteHotel_Found(t *testing.T) {
 	a := assert.New(t)
 
 	id := "654cf68d807298d99186019f"
-	err := HotelService.DeleteHotel(id)
+	_, err := HotelService.DeleteHotel(id)
 
 	a.Nil(err)
 }

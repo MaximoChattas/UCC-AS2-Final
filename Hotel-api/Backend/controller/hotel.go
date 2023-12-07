@@ -63,14 +63,23 @@ func GetHotels(c *gin.Context) {
 func DeleteHotel(c *gin.Context) {
 	id := c.Param("id")
 
-	err := service.HotelService.DeleteHotel(id)
+	hotel, err := service.HotelService.DeleteHotel(id)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Hotel deleted"})
+	for _, image := range hotel.Images {
+		err = os.Remove("Images/" + image)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Hotel " + hotel.Id + " deleted"})
 }
 
 func UpdateHotel(c *gin.Context) {

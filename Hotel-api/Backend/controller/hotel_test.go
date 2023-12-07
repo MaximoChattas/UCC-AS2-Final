@@ -36,8 +36,8 @@ func (t testHotel) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) {
 	return hotelDto, nil
 }
 
-func (t testHotel) DeleteHotel(id string) error {
-	return nil
+func (t testHotel) DeleteHotel(id string) (dto.HotelDto, error) {
+	return dto.HotelDto{Id: id}, nil
 }
 
 func (t testHotel) UpdateHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) {
@@ -196,7 +196,7 @@ func TestDeleteHotel(t *testing.T) {
 
 	a.Equal(http.StatusOK, w.Code)
 
-	expectedResponse := `{"message":"Hotel deleted"}`
+	expectedResponse := `{"message":"Hotel 654cf68d807298d99186019f deleted"}`
 
 	a.Equal(expectedResponse, w.Body.String())
 }
