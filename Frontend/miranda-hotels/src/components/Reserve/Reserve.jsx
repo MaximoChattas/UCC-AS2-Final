@@ -6,7 +6,7 @@ import { format, differenceInHours } from "date-fns";
 const Reservation = ({ hotel_id, hotelRate, startDate, endDate }) => {
   const { userProfile } = useContext(UserProfileContext);
   const [error, setError] = useState("");
-  const [reservationSaved, setReservationSaved] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const calculateAmount = () => {
@@ -40,6 +40,8 @@ const Reservation = ({ hotel_id, hotelRate, startDate, endDate }) => {
         end_date: format(checkoutDate, "dd-MM-yyyy HH:mm"),
       };
 
+      setLoading(true);
+
       const response = await fetch("http://localhost:8090/reserve", {
         method: "POST",
         headers: {
@@ -49,11 +51,11 @@ const Reservation = ({ hotel_id, hotelRate, startDate, endDate }) => {
       });
 
       if (response.ok) {
-        setReservationSaved(true);
         const data = await response.json();
-        const url = "/reservation/" + data.id;
-        navigate(url);
+        navigate(`/reservation/${data.id}`);
+
       } else {
+        setLoading(false);
         const data = await response.json();
         const errorMessage = data.error || "Error";
         throw new Error(errorMessage);
@@ -73,8 +75,8 @@ const Reservation = ({ hotel_id, hotelRate, startDate, endDate }) => {
   return (
     <div>
       <p>Total: ${amount}</p>
-      <button onClick={handleReservation} disabled={reservationSaved}>
-        {reservationSaved ? "Reservado" : "Reservar"}
+      <button onClick={handleReservation} disabled={loading}>
+        {loading ? 'Reservando...' : 'Reservar'}
       </button>
       {error && <p className="error-message">{error}</p>}
     </div>
