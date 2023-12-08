@@ -5,11 +5,15 @@ import (
 	"Hotel/dto"
 	"Hotel/model"
 	"Hotel/queue"
+	"Hotel/utils"
 	"encoding/json"
 	"errors"
+	"net/http"
 )
 
-type hotelService struct{}
+type hotelService struct {
+	HTTPClient utils.HttpClientInterface
+}
 
 type hotelServiceInterface interface {
 	GetHotelById(id string) (dto.HotelDto, error)
@@ -22,7 +26,9 @@ type hotelServiceInterface interface {
 var HotelService hotelServiceInterface
 
 func init() {
-	HotelService = &hotelService{}
+	HotelService = &hotelService{
+		HTTPClient: &utils.HttpClient{},
+	}
 }
 
 func (s *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, error) {
@@ -136,7 +142,22 @@ func (s *hotelService) DeleteHotel(id string) (dto.HotelDto, error) {
 		return dto.HotelDto{}, errors.New("hotel not found")
 	}
 
-	err := client.HotelClient.DeleteHotelById(id)
+	url := "http://user-reservationnginx:8090/amadeus/" + id
+	req, err := http.NewRequest(http.MethodDelete, url, nil)
+	if err != nil {
+		return dto.HotelDto{}, err
+	}
+
+	res, err := s.HTTPClient.Do(req)
+	if err != nil {
+		return dto.HotelDto{}, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return dto.HotelDto{}, errors.New("status not OK")
+	}
+
+	err = client.HotelClient.DeleteHotelById(id)
 
 	if err != nil {
 		return dto.HotelDto{}, err

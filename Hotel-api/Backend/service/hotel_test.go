@@ -12,11 +12,13 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"net/http"
 	"testing"
 )
 
 type testHotel struct{}
 type testQueue struct{}
+type mockHTTPClient struct{}
 
 var channel wabbit.Channel
 var mockQueue wabbit.Queue
@@ -25,6 +27,14 @@ func init() {
 	client.HotelClient = testHotel{}
 	queue.QueueProducer = testQueue{}
 	queue.QueueProducer.InitQueue()
+	HotelService = &hotelService{HTTPClient: &mockHTTPClient{}}
+}
+
+func (m *mockHTTPClient) Do(_ *http.Request) (*http.Response, error) {
+
+	return &http.Response{
+		StatusCode: http.StatusOK,
+	}, nil
 }
 
 func (t testHotel) InsertHotel(hotel model.Hotel) model.Hotel {
