@@ -71,3 +71,35 @@ func TestGetAmadeusIdByHotelId(t *testing.T) {
 	a.NoError(mock.ExpectationsWereMet())
 	a.Equal(amadeusMap, result)
 }
+
+func TestDeleteMapping(t *testing.T) {
+
+	a := assert.New(t)
+
+	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
+	if err != nil {
+		t.Fatalf("error opening database: %v", err)
+	}
+
+	gormDb, err := gorm.Open("mysql", db)
+	if err != nil {
+		t.Fatalf("error connecting to database: %v", err)
+	}
+
+	Db = gormDb
+
+	amadeusMap := model.AmadeusMap{
+		HotelId:   "654cf68d807298d99186019f",
+		AmadeusId: "SBMIASOF",
+	}
+
+	mock.ExpectBegin()
+	mock.ExpectExec("DELETE FROM `amadeus_maps` WHERE (hotel_id = ?)").WithArgs(amadeusMap.HotelId).
+		WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectCommit()
+
+	err = AmadeusClient.DeleteMapping(amadeusMap)
+
+	a.Nil(err)
+	a.NoError(mock.ExpectationsWereMet())
+}

@@ -4,6 +4,7 @@ import (
 	"User-Reservation/client"
 	"User-Reservation/dto"
 	"User-Reservation/model"
+	"errors"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
@@ -36,6 +37,15 @@ func (t testAmadeusMap) GetAmadeusIdByHotelId(hotelId string) model.AmadeusMap {
 	}
 
 	return mapping
+}
+
+func (t testAmadeusMap) DeleteMapping(mapping model.AmadeusMap) error {
+
+	if mapping.HotelId == "" {
+		return errors.New("mapping not found")
+	}
+
+	return nil
 }
 
 func TestInsertAmadeusMap_Error(t *testing.T) {
@@ -111,4 +121,27 @@ func TestGetAmadeusAvailability(t *testing.T) {
 	available, err := AmadeusService.GetAmadeusAvailability(amadeusId, startDate, endDate)
 	a.Nil(err)
 	a.True(available)
+}
+
+func TestDeleteMapping_NotFound(t *testing.T) {
+
+	a := assert.New(t)
+
+	hotel_id := ""
+	err := AmadeusService.DeleteMapping(hotel_id)
+
+	a.NotNil(err)
+
+	expectedResponse := "mapping not found"
+	a.Equal(expectedResponse, err.Error())
+}
+
+func TestDeleteMapping_Found(t *testing.T) {
+
+	a := assert.New(t)
+
+	hotel_id := "654cf68d807298d99186019f"
+	err := AmadeusService.DeleteMapping(hotel_id)
+
+	a.Nil(err)
 }

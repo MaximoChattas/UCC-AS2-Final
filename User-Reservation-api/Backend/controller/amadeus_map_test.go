@@ -52,6 +52,15 @@ func (t testAmadeus) GetAmadeusAvailability(amadeusId string, _ time.Time, _ tim
 	return true, nil
 }
 
+func (t testAmadeus) DeleteMapping(hotelId string) error {
+
+	if hotelId == "0" {
+		return errors.New("mapping not found")
+	}
+
+	return nil
+}
+
 func TestInsertAmadeusMap(t *testing.T) {
 
 	a := assert.New(t)
@@ -178,4 +187,54 @@ func TestGetAmadeusIdByHotelId_Found(t *testing.T) {
 		t.Fatalf("Failed to unmarshal response: %v", err)
 	}
 	a.Equal(expectedResponse, response)
+}
+
+func TestDeleteMapping_NotFound(t *testing.T) {
+
+	a := assert.New(t)
+
+	r := gin.Default()
+	r.DELETE("/amadeus/:hotel_id", DeleteMapping)
+
+	req, err := http.NewRequest(http.MethodDelete, "/amadeus/0", nil)
+	if err != nil {
+		t.Fatalf("New request failed: %v", err)
+	}
+
+	w := httptest.NewRecorder()
+
+	c, _ := gin.CreateTestContext(w)
+	c.Request = req
+
+	r.ServeHTTP(w, req)
+
+	a.Equal(http.StatusBadRequest, w.Code)
+
+	expectedResponse := `{"error":"mapping not found"}`
+	a.Equal(expectedResponse, w.Body.String())
+}
+
+func TestDeleteMapping_Found(t *testing.T) {
+
+	a := assert.New(t)
+
+	r := gin.Default()
+	r.DELETE("/amadeus/:hotel_id", DeleteMapping)
+
+	req, err := http.NewRequest(http.MethodDelete, "/amadeus/654cf68d807298d99186019f", nil)
+	if err != nil {
+		t.Fatalf("New request failed: %v", err)
+	}
+
+	w := httptest.NewRecorder()
+
+	c, _ := gin.CreateTestContext(w)
+	c.Request = req
+
+	r.ServeHTTP(w, req)
+
+	a.Equal(http.StatusOK, w.Code)
+
+	expectedResponse := `{"message":"Mapping deleted"}`
+	a.Equal(expectedResponse, w.Body.String())
 }
