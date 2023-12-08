@@ -41,3 +41,16 @@ func GetAmadeusIdByHotelId(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, amadeusMapDto)
 }
+
+func DeleteMapping(c *gin.Context) {
+
+	hotelId := c.Param("hotel_id")
+
+	err := service.AmadeusService.DeleteMapping(hotelId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Mapping deleted"})
+}

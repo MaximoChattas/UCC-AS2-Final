@@ -22,6 +22,7 @@ func mapUrls() {
 
 	router.POST("/amadeus", controller.InsertAmadeusMap)
 	router.GET("/amadeus/:hotel_id", controller.GetAmadeusIdByHotelId)
+	router.DELETE("/amadeus/:hotel_id", controller.DeleteMapping)
 
 	log.Info("Finishing mappings configurations")
 }

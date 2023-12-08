@@ -23,6 +23,7 @@ type amadeusServiceInterface interface {
 	InsertAmadeusMap(amadeusMapDto dto.AmadeusMapDto) (dto.AmadeusMapDto, error)
 	GetAmadeusIdByHotelId(hotelId string) (dto.AmadeusMapDto, error)
 	GetAmadeusAvailability(amadeusId string, startDate time.Time, endDate time.Time) (bool, error)
+	DeleteMapping(hotelId string) error
 }
 
 var AmadeusService amadeusServiceInterface
@@ -168,4 +169,17 @@ func (s *amadeusService) GetAmadeusAvailability(amadeusId string, startDate time
 
 	return availabilityResponse.Data[0].Available, nil
 
+}
+
+func (s *amadeusService) DeleteMapping(hotelId string) error {
+
+	mapping := client.AmadeusClient.GetAmadeusIdByHotelId(hotelId)
+
+	if mapping.HotelId == "" {
+		return errors.New("mapping not found")
+	}
+
+	err := client.AmadeusClient.DeleteMapping(mapping)
+
+	return err
 }

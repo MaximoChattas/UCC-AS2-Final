@@ -10,6 +10,7 @@ type amadeusClient struct{}
 type amadeusClientInterface interface {
 	InsertAmadeusMap(mapping model.AmadeusMap) model.AmadeusMap
 	GetAmadeusIdByHotelId(hotelId string) model.AmadeusMap
+	DeleteMapping(mapping model.AmadeusMap) error
 }
 
 var AmadeusClient amadeusClientInterface
@@ -38,4 +39,16 @@ func (c *amadeusClient) GetAmadeusIdByHotelId(hotelId string) model.AmadeusMap {
 	log.Debug("Mapping: ", mapping)
 
 	return mapping
+}
+
+func (c *amadeusClient) DeleteMapping(mapping model.AmadeusMap) error {
+	err := Db.Where("hotel_id = ?", mapping.HotelId).Delete(&model.AmadeusMap{}).Error
+
+	if err != nil {
+		log.Debug("Failed to delete mapping")
+	} else {
+		log.Debug("Mapping deleted: ", mapping.HotelId)
+	}
+
+	return err
 }
